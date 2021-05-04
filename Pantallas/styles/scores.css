@@ -1,0 +1,72 @@
+body {
+  background-image: linear-gradient(
+    45deg,
+    #b8b8b8 0.5%,
+    #548dbf 0.5%,
+    #548dbf 50%,
+    #b8b8b8 50%,
+    #b8b8b8 50.5%,
+    #548dbf 50.5%,
+    #548dbf 100%
+  );
+  background-size: 142.84px 142.84px;
+}
+html {
+  scroll-behavior: smooth;
+}
+
+.LeadBoardTitle {
+  color: #c3f25e;
+}
+
+div.ex1 {
+  overflow-y: scroll;
+
+  max-height: 90%;
+}
+
+/* Rules for sizing the icon. */
+.material-icons.md-18 {
+  font-size: 18px;
+}
+.material-icons.md-24 {
+  font-size: 24px;
+}
+.material-icons.md-36 {
+  font-size: 36px;
+}
+.material-icons.md-xx {
+  font-size: 30px;
+}
+
+/* Rules for using icons as black on a light background. */
+.material-icons.md-dark {
+  color: rgba(0, 0, 0, 0.54);
+}
+.material-icons.md-dark.md-inactive {
+  color: rgba(0, 0, 0, 0.26);
+}
+.material-icons.md-Gold {
+    color: #d4af37;
+  }
+  .material-icons.md-Plate {
+    color: #454545;
+  }
+
+  .material-icons.md-Bronze {
+    color: #cd7f32 ;
+  }
+/* Rules for using icons as white on a dark background. */
+.material-icons.md-light {
+  color: rgba(255, 255, 255, 1);
+}
+.material-icons.md-light.md-inactive {
+  color: rgba(255, 255, 255, 0.3);
+}
+#image {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  min-width: 100%; 
+  min-height: 100%;
+}

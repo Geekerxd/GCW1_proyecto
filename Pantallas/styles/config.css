@@ -1,0 +1,36 @@
+.centered {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    padding: 50px;
+    transform: translate(-50%, -50%);
+    color:white;
+    border: #b8b8b8 solid 3px;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+  #back{
+      color: white;
+  }
+  #back:hover{
+      color: #b8b8b8;
+  }
+  #loading {
+    animation: rotation 5s infinite linear;
+}
+
+@keyframes rotation {
+    from {
+            -webkit-transform: rotate(0deg);
+    }
+    to {
+            -webkit-transform: rotate(359deg);
+    }
+}
+#image {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    min-width: 100%; 
+    min-height: 100%;
+  }
+  

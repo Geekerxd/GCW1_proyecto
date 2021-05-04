@@ -1,0 +1,202 @@
+.bg {
+  /* The image used */
+  background-image: url("https://github.com/Geekerxd/recursos/blob/main/ejemploJuego2.jpg?raw=true");
+
+  /* Full height */
+  height: 100%;
+
+  /* Center and scale the image nicely */
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+.boton-pausa {
+  position: absolute;
+  width: 75px;
+  height: 70px;
+  right: 2%;
+  top: 2%;
+
+  background: rgba(0, 0, 0, 0.5);
+  box-shadow: 9px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 61px;
+  z-index: 6;
+}
+
+.material-icons {
+  position: absolute;
+  right: 10%;
+
+  top: 10%;
+}
+/* Rules for sizing the icon. */
+.material-icons.md-18 {
+  font-size: 18px;
+}
+.material-icons.md-24 {
+  font-size: 24px;
+}
+.material-icons.md-36 {
+  font-size: 36px;
+}
+.material-icons.md-xx {
+  font-size: 60px;
+}
+
+.material-icons.md-dark {
+  color: rgba(0, 0, 0, 0.54);
+}
+.material-icons.md-dark.md-inactive {
+  color: rgba(0, 0, 0, 0.26);
+}
+
+.material-icons.md-light {
+  color: #ffffff;
+}
+.material-icons.md-light:hover {
+  color: #ffffff4d;
+}
+.material-icons.md-light.md-inactive {
+  color: #ffffff4d;
+}
+
+.widgetCoins {
+  position: absolute;
+
+  width: 280px;
+  height: 8%;
+  left: 2%;
+  bottom: 2%;
+
+  
+
+  font-size: 150%;
+  line-height: 100%;
+
+  color: #000000b7;
+  background-image: linear-gradient(to right, #ff000000, #548dbf);
+  z-index: 6;
+}
+
+
+
+.coinsNumber {
+  color: #ffffff;
+  font-weight: bold;
+}
+
+.Jueguito {
+  border-radius: 10px !important;
+  position: absolute;
+  width: 70%;
+  height: 90%;
+  left: calc(50% - 70% / 2);
+  top: calc(50% - 90% / 2 - 19.5px);
+
+  background-color: #ffffff;
+  box-shadow: 0px 10px 20px;
+}
+
+.image-fit.profileLeft {
+  object-fit: cover;
+  object-position: 50% 100%;
+
+  max-height: 1000px;
+  border-radius: 20px;
+
+  width: 100px;
+  height: 100px;
+
+  position: absolute;
+  
+ 
+
+  background: #c4c4c4;
+  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.15);
+  
+}
+
+.image-fit.profileRight {
+  object-fit: cover;
+  object-position: 50% 100%;
+
+  max-height: 1000px;
+  border-radius: 20px;
+
+  width: 100px;
+  height: 100px;
+
+  position: absolute;
+ 
+ 
+
+  background: #c4c4c4;
+  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.15);
+  
+}
+
+
+.JugadoreLeft{
+
+ position: absolute;
+  height: 100px;
+  
+  font-size: x-large;
+ 
+  left: 5.57%;
+  right: 83.5%;
+  top: 59.2%;
+bottom: 22.74%;
+
+/*z-index: 5;*/
+
+ 
+  
+  
+}
+.JugadorRight{
+
+  position: absolute;
+   height: 100px;
+  
+   font-size: x-large;
+  
+   left: 89.06%;
+right: 0.01%;
+
+top: 59.2%;
+bottom: 22.74%;
+
+ /*z-index: 5;*/
+ 
+
+   
+   
+ }
+
+ .JugadoreLeftName{
+
+  margin-top: 120px;
+
+ }
+
+ .JugadorRightName{
+
+  margin-top: 120px;
+
+ }
+
+ .JuegoImagen{
+  border-radius: 10px !important;
+  position: absolute;
+  width: 70%;
+  height: 90%;
+  left: calc(50% - 70% / 2);
+  top: calc(50% - 90% / 2 - 19.5px);
+
+
+  box-shadow: 0px 10px 20px;
+
+  z-index: 1;
+
+ }

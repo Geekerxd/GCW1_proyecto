@@ -1,0 +1,628 @@
+<html>
+
+<head>
+	<title>Game</title>
+	<link rel="stylesheet" href="styles/game.css">
+	<link rel="stylesheet" href="styles/pantallaJ.css">
+	<link rel="stylesheet" href="styles/stylePausa.css">
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+		integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+	<!-- CSS only -->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+	<!-- JavaScript Bundle with Popper -->
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0"
+		crossorigin="anonymous"></script>
+	<script type="text/javascript" src="js/jquery/jquery-2.1.4.min.js"></script>
+	<script type="text/javascript" src="js/three/three.js"></script>
+	<script type="text/javascript" src="js/three/MTLLoader.js"></script>
+	<script type="text/javascript" src="js/three/OBJLoader.js"></script>
+	<script type="text/javascript">
+		var scene;
+		var camera;
+		var renderer;
+		var controls;
+		var objects = [];
+		var clock;
+		var deltaTime;
+		var keys = {};
+		var keysQueue = [], keysQueue2 = [];
+		var jugador1 = [];
+		var jugador2 = [];
+		var anim = [];
+		var anim2 = [];
+		var direction = new THREE.Vector3(0, 0, 1);
+		var direction2 = new THREE.Vector3(0, 0, 1);
+		var arriba = false, derecha = false;
+		var integer = [50], integer2 = 0;
+		var integer3 = 0, integer4 = 0;
+		var laMoneda = [];
+		var edgeSize = 50, padding = 0.15;
+
+		var pause;
+		var raycaster;
+		var objetosConColision = [];
+
+
+
+		function randInRange(a, b) {
+			return a + Math.floor((b - a) * Math.random());
+		}
+		function spawnAppleVector() {
+			var x = randInRange(-48, 48), z = randInRange(-48, 48);
+			return new THREE.Vector3(x, 1, z);
+		}
+
+		$(document).ready(function () {
+			setupScene();
+			// rayos para las colisiones
+
+
+			// la moneda
+			var monedaPosi = spawnAppleVector();
+			loadOBJWithMTL("assets/obj/", "SM_Bld_Silo_01.obj", "main.mtl", (moneda) => {
+
+				console.log("x: " + monedaPosi.x + " Z: " + monedaPosi.z);
+
+
+				laMoneda.push(moneda);
+				transform(laMoneda[0], monedaPosi.x, 0, monedaPosi.z, 0, 0, 0, 0.3);
+				scene.add(moneda);
+
+
+			});
+
+			//document.addEventListener('keydown', onKeyDown);
+			//document.addEventListener('keyup', onKeyUp);
+			gamepause(false);
+			
+			render();
+		});
+
+		function loadOBJWithMTL(path, objFile, mtlFile, onLoadCallback) {
+			var mtlLoader = new THREE.MTLLoader();
+			mtlLoader.setPath(path);
+			mtlLoader.load(mtlFile, (materiales) => {
+				var objLoader = new THREE.OBJLoader();
+				objLoader.setPath(path);
+				objLoader.setMaterials(materiales);
+				objLoader.load(objFile, (objCargado) => {
+					onLoadCallback(objCargado);
+				});
+			});
+		}
+
+		function gamepause(aux){
+			pause = aux;
+		}
+
+		function onKeyDown(event) {
+			keys[String.fromCharCode(event.keyCode)] = true;
+		}
+		function onKeyUp(event) {
+			keys[String.fromCharCode(event.keyCode)] = false;
+		}
+
+
+		document.addEventListener("keydown", function (e) {
+			switch (e.key) {
+
+				case "ArrowDown":
+					keysQueue.push(new THREE.Vector3(0, 0, 1));
+					break;
+				case "ArrowUp":
+					keysQueue.push(new THREE.Vector3(0, 0, 1));
+					break;
+				case "ArrowLeft":
+					keysQueue.push(new THREE.Vector3(0, 0, 1));
+					integer[0] = 1;
+					break;
+				case "ArrowRight":
+					keysQueue.push(new THREE.Vector3(0, 0, 1));
+					integer[1] = 1;
+					break;
+
+
+
+				case "s":
+					keysQueue2.push(new THREE.Vector3(0, 0, 1));
+					break;
+				case "w":
+					keysQueue2.push(new THREE.Vector3(0, 0, 1));
+					break;
+				case "a":
+					keysQueue2.push(new THREE.Vector3(0, 0, 1));
+					integer[2] = 1;
+					break;
+				case "d":
+					keysQueue2.push(new THREE.Vector3(0, 0, 1));
+					integer[3] = 1;
+					break;
+
+
+
+				case "x":
+
+					integer[4] = 1;
+					break;
+			}
+		});
+
+		function render() {
+			requestAnimationFrame(render);
+			deltaTime = clock.getDelta();
+			var velocidad = 20;
+
+			//tren inicial derecha
+			direction = keysQueue.length > 0 ? keysQueue.pop(0) : direction;
+			//tren inicial izquierda
+			direction2 = keysQueue2.length > 0 ? keysQueue2.pop(0) : direction2;
+
+			jugador2[0].translateX(direction2.x * deltaTime * velocidad);
+			jugador2[0].translateZ(direction2.z * deltaTime * velocidad);
+
+			jugador1[0].translateX(direction.x * deltaTime * velocidad);
+			jugador1[0].translateZ(direction.z * deltaTime * velocidad);
+
+			if (anim[2].position.z < 100) {
+				anim[2].translateZ(direction.z * deltaTime * 10);
+				anim[1].translateZ(direction.z * deltaTime * 10);
+				anim[0].translateZ(direction.z * deltaTime * 10);
+			} else {
+				transform(anim[2], -60, 0, -80, 0, 0, 0, 1);
+				transform(anim[1], -60, 0, -84, 0, 0, 0, 1);
+				transform(anim[0], -60, 0, -89, 0, 0, 0, 1);
+			}
+
+			if (anim2[1].position.z > -100) {
+				anim2[1].translateZ(direction.z * deltaTime * 12);
+			} else {
+				transform(anim2[1], 63, 1, 80, 0, 180, 0, 1);
+			}
+
+			if (anim2[0].position.z < 100) {
+				anim2[0].translateZ(direction.z * deltaTime * 12);
+			} else {
+				transform(anim2[0], 61, 1, -80, 0, 0, 0, 1);
+			}
+
+			// Esto pasa cuando toca las teclas:
+
+			if (integer[0] == 1) {
+				jugador1[0].rotateY(THREE.Math.degToRad(90));
+				integer[0] = 0;
+			}
+			if (integer[1] == 1) {
+				jugador1[0].rotateY(THREE.Math.degToRad(-90));
+				integer[1] = 0;
+
+			}
+			if (integer[2] == 1) {
+				jugador2[0].rotateY(THREE.Math.degToRad(90));
+				integer[2] = 0;
+
+			}
+			if (integer[3] == 1) {
+				jugador2[0].rotateY(THREE.Math.degToRad(-90));
+				integer[3] = 0;
+
+			}
+			if (integer[4] == 1) {
+				//monedas posicion
+				var monedaPosi = spawnAppleVector();
+				transform(laMoneda[0], monedaPosi.x, 0, monedaPosi.z, 0, 0, 0, 0.3);
+				integer[4] = 0;
+			}
+
+
+			// si colisiona con la moneda
+			if (jugador1[0].position.distanceTo(laMoneda[0].position) < 3) {
+				// nueva posición de la moneda
+				var monedaPosi = spawnAppleVector();
+				transform(laMoneda[0], monedaPosi.x, 0, monedaPosi.z, 0, 0, 0, 0.3);
+
+				// nuevo vagón detrás
+
+				console.log("Si hay colision moneda vagon derecho");
+			} else if (jugador2[0].position.distanceTo(laMoneda[0].position) < 3) {
+				// nueva posición de la moneda
+				var monedaPosi = spawnAppleVector();
+				transform(laMoneda[0], monedaPosi.x, 0, monedaPosi.z, 0, 0, 0, 0.3);
+
+				// nuevo vagón detrás
+				console.log("Si hay colision moneda vagon izqu");
+			}
+
+			/* 
+			jugadores[1].translateZ(-(velocidad * deltaTime));
+			
+			console.log("Si hay colision");
+			*/
+		
+			renderer.render(scene, camera);
+			
+		}
+
+		function setupScene() {
+			var visibleSize = { width: window.innerWidth, height: window.innerHeight };
+			clock = new THREE.Clock();
+			scene = new THREE.Scene();
+			camera = new THREE.PerspectiveCamera(75, visibleSize.width / visibleSize.height, 0.1, 100);
+			//camera.position.z = 2;
+			camera.position.y = 80;
+			camera.rotation.x = THREE.Math.degToRad(-90);
+
+			renderer = new THREE.WebGLRenderer({ precision: "mediump" });
+			renderer.setClearColor(new THREE.Color(0, 0, 0));
+			renderer.setPixelRatio(visibleSize.width / visibleSize.height);
+			renderer.setSize(visibleSize.width, visibleSize.height);
+
+			var ambientLight = new THREE.AmbientLight(new THREE.Color(1, 1, 1), 1.0);
+			scene.add(ambientLight);
+
+			var directionalLight = new THREE.DirectionalLight(new THREE.Color(1, 1, 0), 0.4);
+			directionalLight.position.set(0, 0, 1);
+			directionalLight.castShadow = true;
+			scene.add(directionalLight);
+
+			var grid = new THREE.GridHelper(50, 10, 0xffffff, 0xffffff);
+			grid.position.y = 1;
+			scene.add(grid);
+
+			loadOBJWithMTL("assets/obj/", "SM_Veh_Metro_01.obj", "main.mtl", (jugador) => {//izquierda
+				transform(jugador, -30, 0, 0, 0, 0, 0, 1);
+				scene.add(jugador);
+				jugador2.push(jugador);
+			});
+			loadOBJWithMTL("assets/obj/", "SM_Veh_Metro_01.obj", "main.mtl", (jugador) => {//derecha
+				transform(jugador, 30, 0, 0, 0, 0, 0, 1);
+				scene.add(jugador);
+				jugador1.push(jugador);
+			});
+			loadOBJWithMTL("assets/obj/", "SM_Env_Tile_Grass_01.obj", "main.mtl", (plane) => {
+				plane.scale.set(100, 1, 100);
+				plane.position.set(-200, 0, -200);
+				scene.add(plane);
+			});
+			loadOBJWithMTL("assets/obj/", "SM_Env_GroundMound_01.obj", "main.mtl", (ground01) => {
+				var ground02 = ground01.clone();
+				transform(ground01, -100, 0, 30, 0, 0, 0, 5);
+				scene.add(ground01);
+				transform(ground02, 100, 0, -20, 0, 180, 0, 5);
+				//scene.add(ground02);
+			});
+			loadOBJWithMTL("assets/obj/", "SM_Env_Hills_01.obj", "main.mtl", (hill01) => {
+				transform(hill01, 100, 0, -40, 0, 0, 0, 5);
+				scene.add(hill01);
+			});
+			loadOBJWithMTL("assets/obj/", "SM_Env_Hills_02.obj", "main.mtl", (hill02) => {
+				transform(hill02, -110, 0, 0, 0, 0, 0, 5);
+				scene.add(hill02);
+			});
+			loadOBJWithMTL("assets/obj/", "SM_Env_Hills_03.obj", "main.mtl", (hill03) => {
+				transform(hill03, -100, 0, -29, 0, 0, 0, 5);
+				scene.add(hill03);
+			});
+			loadOBJWithMTL("assets/obj/", "SM_Env_Hills_03.obj", "main.mtl", (hill04) => {
+				transform(hill04, 90, 0, 10, 0, 90, 0, 5);
+				scene.add(hill04);
+			});
+			loadOBJWithMTL("assets/obj/", "SM_Bld_Station_Large_01.obj", "main.mtl", (station01) => {
+				transform(station01, -70, 1, 0, 0, 90, 0, 1);
+				scene.add(station01);
+			});
+			loadOBJWithMTL("assets/obj/", "SM_Env_Track_Tunnel_01.obj", "main.mtl", (tunel) => {
+				transform(tunel, -60, 0, -53, 0, 0, 0, 1);
+				scene.add(tunel);
+			});
+			loadOBJWithMTL("assets/obj/", "SM_Bld_Warehouse_01.obj", "main.mtl", (warehouse) => {
+				transform(warehouse, -120, 0, -51, 0, 90, 0, 1);
+				scene.add(warehouse);
+			});
+			loadOBJWithMTL("assets/obj/", "SM_Veh_Carriage_Logs_01.obj", "main.mtl", (carriagelogs01) => {
+				var carriagelogs02 = carriagelogs01.clone();
+				transform(carriagelogs01, -100, 0, -51, 0, 90, 0, 1);
+				scene.add(carriagelogs01);
+				transform(carriagelogs02, -105, 0, -51, 0, 90, 0, 1);
+				scene.add(carriagelogs02);
+			});
+			loadOBJWithMTL("assets/obj/", "SM_Bld_Signal_Tower_01.obj", "main.mtl", (tower01) => {
+				transform(tower01, 85, 0, 35, 0, -90, 0, 1);
+				scene.add(tower01);
+			});
+			loadOBJWithMTL("assets/obj/", "SM_Prop_Logs_01.obj", "main.mtl", (logs) => {
+				transform(logs, 85, 0, 38, 0, -90, 0, 1);
+				scene.add(logs);
+			});
+			loadOBJWithMTL("assets/obj/", "SM_Prop_Container_01.obj", "main.mtl", (container01) => {
+				transform(container01, -77, 0, -45, 0, 90, 0, 1);
+				scene.add(container01);
+			});
+			loadOBJWithMTL("assets/obj/", "SM_Prop_Container_02.obj", "main.mtl", (container02) => {
+				transform(container02, -77, 0, -43, 0, 90, 0, 1);
+				scene.add(container02);
+			});
+			loadOBJWithMTL("assets/obj/", "SM_Prop_Container_03.obj", "main.mtl", (container03) => {
+				transform(container03, -77, 0, -41, 0, 90, 0, 1);
+				scene.add(container03);
+			});
+			loadOBJWithMTL("assets/obj/", "SM_Env_Track_Corner_01.obj", "main.mtl", (corner01) => {
+				transform(corner01, -62, 0, -39, 0, 0, 0, 1);
+				scene.add(corner01);
+			});
+			loadOBJWithMTL("assets/obj/", "SM_Prop_Pole_01.obj", "main.mtl", (pole01) => {
+				var pole02 = pole01.clone();
+				transform(pole01, -60, 0, 30, 0, 0, 0, 1);
+				scene.add(pole01);
+				transform(pole02, -60, 0, -30, 0, 0, 0, 1);
+				scene.add(pole02);
+			});
+			loadOBJWithMTL("assets/obj/", "SM_Veh_Freight_01.obj", "main.mtl", (freight) => {
+				transform(freight, -60, 0, -80, 0, 0, 0, 1);
+				scene.add(freight);
+				anim.push(freight);
+			});
+			loadOBJWithMTL("assets/obj/", "SM_Env_Track_Ridge_Bridge_01.obj", "main.mtl", (Bridge01) => {
+				transform(Bridge01, 66.5, 0, -55, 0, 90, 0, 1);
+				scene.add(Bridge01);
+			});
+			loadOBJWithMTL("assets/obj/", "SM_Env_Track_Ridge_Corner_01.obj", "main.mtl", (Bridgecorner01) => {
+				var Bridgecorner02 = Bridgecorner01.clone();
+				transform(Bridgecorner01, 58, 0, -55, 0, 90, 0, 1);
+				scene.add(Bridgecorner01);
+				transform(Bridgecorner02, 78, 0, -67, 0, 180, 0, 1);
+				scene.add(Bridgecorner02);
+			});
+			loadOBJWithMTL("assets/obj/", "SM_Env_Track_Ridge_Straight_01.obj", "main.mtl", (Bridgestraight01) => {
+				var bridge = [];
+				var aux = 68;
+				for (let i = 0; i < 4; i++) {
+					bridge[i] = Bridgestraight01.clone();
+					transform(bridge[i], aux, 1, -54, 0, 90, 0, 1);
+					//scene.add(bridge[i]);
+					aux += 3;
+				}
+
+			});
+			loadOBJWithMTL("assets/obj/", "SM_Veh_BigRig_01.obj", "main.mtl", (bigrig01) => {
+				transform(bigrig01, 63, 1, 80, 0, 180, 0, 1);
+				scene.add(bigrig01);
+				anim2.push(bigrig01);
+			});
+			loadOBJWithMTL("assets/obj/", "SM_Veh_BigRig_02.obj", "main.mtl", (bigrig02) => {
+				transform(bigrig02, 61, 1, -80, 0, 0, 0, 1);
+				scene.add(bigrig02);
+				anim2.push(bigrig02);
+			});
+			loadOBJWithMTL("assets/obj/", "SM_Veh_Carriage_Pipes_01.obj", "main.mtl", (fuel01) => {
+				var fuel02 = fuel01.clone();
+				transform(fuel01, -60, 0, -84, 0, 0, 0, 1);
+				scene.add(fuel01);
+				anim.push(fuel01);
+				transform(fuel02, -60, 0, -89, 0, 0, 0, 1);
+				scene.add(fuel02);
+				anim.push(fuel02);
+			});
+			loadOBJWithMTL("assets/obj/", "SM_Env_Track_Straight_01.obj", "main.mtl", (Track01) => {
+				var tracks = [];
+				var aux = 0;
+				for (let i = 0; i < 24; i++) {
+					tracks[i] = Track01.clone();
+					transform(tracks[i], -60, 0, aux, 0, 0, 0, 1);
+					scene.add(tracks[i]);
+					aux -= 3;
+				}
+				aux = 3;
+				for (let i = 0; i < 24; i++) {
+					tracks[i] = Track01.clone();
+					transform(tracks[i], -60, 0, aux, 0, 0, 0, 1);
+					scene.add(tracks[i]);
+					aux += 3;
+				}
+				aux = 0;
+				for (let i = 0; i < 13; i++) {
+					tracks[i] = Track01.clone();
+					transform(tracks[i], -62, 0, aux, 0, 0, 0, 1);
+					scene.add(tracks[i]);
+					aux -= 3;
+				}
+				aux = 3;
+				for (let i = 0; i < 24; i++) {
+					tracks[i] = Track01.clone();
+					transform(tracks[i], -62, 0, aux, 0, 0, 0, 1);
+					scene.add(tracks[i]);
+					aux += 3;
+				}
+				aux = -74;
+				for (let i = 0; i < 30; i++) {
+					tracks[i] = Track01.clone();
+					transform(tracks[i], aux, 0, -51, 0, 90, 0, 1);
+					scene.add(tracks[i]);
+					aux -= 3;
+				}
+
+
+			});
+			loadOBJWithMTL("assets/obj/", "SM_Env_Road_Straight_01.obj", "main.mtl", (Road01) => {
+				var roads = [];
+				var aux = 0;
+				for (let i = 0; i < 50; i++) {
+					roads[i] = Road01.clone();
+					transform(roads[i], 62, 1, aux, 0, 90, 0, 1);
+					scene.add(roads[i]);
+					aux -= 1.4;
+				}
+				aux = 0;
+				for (let i = 0; i < 50; i++) {
+					roads[i] = Road01.clone();
+					transform(roads[i], 62, 1, aux, 0, -90, 0, 1);
+					scene.add(roads[i]);
+					aux -= 1.4;
+				}
+				aux = 0;
+				for (let i = 0; i < 50; i++) {
+					roads[i] = Road01.clone();
+					transform(roads[i], 62, 1, aux, 0, -90, 0, 1);
+					scene.add(roads[i]);
+					aux += 1.4;
+				}
+				aux = 0;
+				for (let i = 0; i < 50; i++) {
+					roads[i] = Road01.clone();
+					transform(roads[i], 62, 1, aux, 0, 90, 0, 1);
+					scene.add(roads[i]);
+					aux += 1.4;
+				}
+
+			});
+
+			loadOBJWithMTL("assets/obj/", "SM_Env_Stair_Walkway_01.obj", "main.mtl", (stair) => {
+				transform(stair, -60, 1, 0, 0, 0, 0, 1);
+				scene.add(stair);
+			});
+			loadOBJWithMTL("assets/obj/", "SM_Prop_LightPole_01.obj", "main.mtl", (lightpole01) => {
+				var lightpole02 = lightpole01.clone();
+				var lightpole03 = lightpole01.clone();
+				var lightpole04 = lightpole01.clone();
+				transform(lightpole01, -63, 1, -8, 0, 0, 0, 1);
+				scene.add(lightpole01);
+				transform(lightpole02, -63, 1, 8, 0, 0, 0, 1);
+				scene.add(lightpole02);
+				transform(lightpole03, -56, 1, 8, 0, 0, 0, 1);
+				scene.add(lightpole03);
+				transform(lightpole04, -56, 1, -8, 0, 0, 0, 1);
+				scene.add(lightpole04);
+			});
+			loadOBJWithMTL("assets/obj/", "SM_Env_Station_Platform_01.obj", "main.mtl", (platform01) => {
+				var platform02 = platform01.clone();
+				var platform03 = platform01.clone();
+				var platform04 = platform01.clone();
+				var platform05 = platform01.clone();
+				var platform06 = platform01.clone();
+				var platform07 = platform01.clone();
+				transform(platform01, -64, 0, 0, 0, 0, 0, 1);
+				scene.add(platform01);
+				transform(platform02, -57, 0, 0, 0, 0, 0, 1);
+				scene.add(platform02);
+				transform(platform03, -66, 0, 0, 0, 0, 0, 1);
+				scene.add(platform03);
+				transform(platform04, -68, 0, 0, 0, 0, 0, 1);
+				scene.add(platform04);
+				transform(platform05, -70, 0, 0, 0, 0, 0, 1);
+				scene.add(platform05);
+				transform(platform06, -72, 0, 0, 0, 0, 0, 1);
+				scene.add(platform06);
+				transform(platform07, -74, 0, 0, 0, 0, 0, 1);
+				scene.add(platform07);
+			});
+			loadOBJWithMTL("assets/obj/", "SM_Bld_StationCover_01.obj", "main.mtl", (stationcover01) => {
+				var stationcover02 = stationcover01.clone();
+				var stationcover03 = stationcover01.clone();
+				var stationcover04 = stationcover01.clone();
+				transform(stationcover01, -63, 1, -5, 0, 90, 0, 1);
+				scene.add(stationcover01);
+				transform(stationcover02, -56, 1, 5, 0, 90, 0, 1);
+				scene.add(stationcover02);
+				transform(stationcover03, -63, 1, 5, 0, 90, 0, 1);
+				scene.add(stationcover03);
+				transform(stationcover04, -56, 1, -5, 0, 90, 0, 1);
+				scene.add(stationcover04);
+			});
+			loadOBJWithMTL("assets/obj/", "SM_Env_Tree_01.obj", "main.mtl", (tree01) => {
+				var trees = [];
+				var aux = 0;
+				var aux2 = 0;
+				for (let i = 0; i < 20; i++) {
+					aux = randInRange(-50, 70);
+					aux2 = randInRange(-1, 1);
+					trees[i] = tree01.clone();
+					transform(trees[i], 58 + aux2, 0, aux, 0, 0, 0, 1);
+					scene.add(trees[i]);
+				}
+				var aux = 0;
+				var aux2 = 0;
+				for (let i = 0; i < 20; i++) {
+					aux = randInRange(-50, 70);
+					trees[i] = tree01.clone();
+					transform(trees[i], 67 + aux2, 0, aux, 0, 0, 0, 1);
+					scene.add(trees[i]);
+				}
+			});
+			$("#scene-section").append(renderer.domElement);
+		}
+
+		function transform(model, posX, posY, posZ, rotX, rotY, rotZ, esc) {
+			model.position.x = posX;
+			model.position.y = posY;
+			model.position.z = posZ;
+			model.rotation.set(THREE.Math.degToRad(rotX), THREE.Math.degToRad(rotY), THREE.Math.degToRad(rotZ));
+			model.scale.set(0.3 * esc, 0.3 * esc, 0.3 * esc);
+		}
+
+
+	</script>
+</head>
+
+<body>
+
+	<div id="scene-section">
+		<div class="boton-pausa">
+			<button type="hidden" class="pause" data-bs-toggle="modal" data-bs-target="#modalPausa">
+				<span class="material-icons md-xx md-light" :hover>
+					pause
+				</span>
+			</button>
+		</div>
+		<!-- IMAGENES DE LOS JUGADPRES-->
+		<div class="JugadoreLeft">
+			<img class="image-fit profileLeft"
+				src="https://cdn0.iconfinder.com/data/icons/set-ui-app-android/32/8-512.png" alt="no se cargo :(">
+			<label class="JugadoreLeftName">Diego</label>
+		</div>
+		<div class="JugadorRight">
+			<img class="image-fit profileRight"
+				src="https://cdn0.iconfinder.com/data/icons/set-ui-app-android/32/8-512.png" alt="no se cargo :(">
+			<label class="JugadorRightName">Gonzalo</label>
+		</div>
+	</div>
+	<div class="modal fade" id="modalPausa" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<img id="juegoEnPausa" src="images/rail_road_paused.png" alt="PAUSE">
+				</div>
+				<div class="animacion_pausa">
+					<img class="tren_pausa" src="images/tren1.png" alt="tren">
+					<img class="rails_road" src="images/rails_road.png" alt="rails_road">
+					<img class="rails_road" src="images/rails_road.png" alt="rails_road">
+					<img class="rails_road" src="images/rails_road.png" alt="rails_road">
+					<img class="rails_road" src="images/rails_road.png" alt="rails_road">
+					<img class="rails_road" src="images/rails_road.png" alt="rails_road">
+				</div>
+				<br>
+				<div class="elFooter">
+					<button id="btnResume" type="button" class="btn btn-primary" data-bs-dismiss="modal">Resume</button>
+					<a href="principal.html">
+
+						<button id="btnQuit" type="button" class="btn btn-primary">Quit</button>
+					</a>
+					<br><br>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+		integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+		crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+		integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+		crossorigin="anonymous"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+		integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+		crossorigin="anonymous"></script>
+</body>
+
+</html>
