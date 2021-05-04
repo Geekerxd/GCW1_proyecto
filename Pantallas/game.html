@@ -62,13 +62,13 @@
 
 			// la moneda
 			var monedaPosi = spawnAppleVector();
-			loadOBJWithMTL("assets/obj/", "SM_Bld_Silo_01.obj", "main.mtl", (moneda) => {
+			loadOBJWithMTL("assets/obj/", "coin3.obj", "coin3.mtl", (moneda) => {
 
 				console.log("x: " + monedaPosi.x + " Z: " + monedaPosi.z);
 
 
 				laMoneda.push(moneda);
-				transform(laMoneda[0], monedaPosi.x, 0, monedaPosi.z, 0, 0, 0, 0.3);
+				transform(laMoneda[0], monedaPosi.x, 1.5, monedaPosi.z, 90, 0, 0, 1.5);
 				scene.add(moneda);
 
 
@@ -165,7 +165,7 @@
 
 			jugador1[0].translateX(direction.x * deltaTime * velocidad);
 			jugador1[0].translateZ(direction.z * deltaTime * velocidad);
-
+			laMoneda[0].rotateZ(deltaTime);
 			if (anim[2].position.z < 100) {
 				anim[2].translateZ(direction.z * deltaTime * 10);
 				anim[1].translateZ(direction.z * deltaTime * 10);
@@ -212,7 +212,7 @@
 			if (integer[4] == 1) {
 				//monedas posicion
 				var monedaPosi = spawnAppleVector();
-				transform(laMoneda[0], monedaPosi.x, 0, monedaPosi.z, 0, 0, 0, 0.3);
+				transform(laMoneda[0], monedaPosi.x, 1.5, monedaPosi.z, 90, 0, 0, 1.5);
 				integer[4] = 0;
 			}
 
@@ -221,7 +221,7 @@
 			if (jugador1[0].position.distanceTo(laMoneda[0].position) < 3) {
 				// nueva posición de la moneda
 				var monedaPosi = spawnAppleVector();
-				transform(laMoneda[0], monedaPosi.x, 0, monedaPosi.z, 0, 0, 0, 0.3);
+				transform(laMoneda[0], monedaPosi.x, 1.5, monedaPosi.z, 90, 0, 0, 1.5);
 
 				// nuevo vagón detrás
 
@@ -229,7 +229,7 @@
 			} else if (jugador2[0].position.distanceTo(laMoneda[0].position) < 3) {
 				// nueva posición de la moneda
 				var monedaPosi = spawnAppleVector();
-				transform(laMoneda[0], monedaPosi.x, 0, monedaPosi.z, 0, 0, 0, 0.3);
+				transform(laMoneda[0], monedaPosi.x, 1.5, monedaPosi.z, 90, 0, 0, 1.5);
 
 				// nuevo vagón detrás
 				console.log("Si hay colision moneda vagon izqu");
