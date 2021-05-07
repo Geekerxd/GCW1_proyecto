@@ -31,6 +31,12 @@
 		var keysQueue = [], keysQueue2 = [];
 		var jugador1 = [];
 		var jugador2 = [];
+		var vagones1 = [];
+		var vagones2 = [];
+
+		var lastPosition1 = [];
+		var lastPosition2 = [];
+
 		var anim = [];
 		var anim2 = [];
 		var direction = new THREE.Vector3(0, 0, 1);
@@ -78,7 +84,7 @@
 			//document.addEventListener('keydown', onKeyDown);
 			//document.addEventListener('keyup', onKeyUp);
 			gamepause(false);
-			
+
 			render();
 		});
 
@@ -95,7 +101,7 @@
 			});
 		}
 
-		function gamepause(aux){
+		function gamepause(aux) {
 			pause = aux;
 		}
 
@@ -166,6 +172,36 @@
 
 			jugador1[0].translateX(direction.x * deltaTime * velocidad);
 			jugador1[0].translateZ(direction.z * deltaTime * velocidad);
+
+			// Seguimiento de vagones:
+			var pos1 = new THREE.Vector3(jugador1[0].position.x, 0, jugador1[0].position.z);
+
+			lastPosition1.push(pos1);
+
+			console.log("X: "+ jugador1[0].position.x + " y: "+ jugador1[0].position.z);
+
+
+			for (let i = 1; i < vagones1.length; i++) {
+
+				var ultiPosi = lastPosition1[lastPosition1.length -15-i*7];
+				transform(vagones1[i], ultiPosi.x, 0, ultiPosi.z, 0, 0, 0, 1);
+				//vagones1[i].translateX(ultiPosi.x);
+				//vagones1[i].translateZ(ultiPosi.z);
+
+				
+
+
+			}
+
+
+
+
+
+
+
+
+
+			// Animaciones:
 			laMoneda[0].rotateZ(deltaTime);
 			if (anim[2].position.z < 100) {
 				anim[2].translateZ(direction.z * deltaTime * 10);
@@ -176,6 +212,7 @@
 				transform(anim[1], -60, 0, -84, 0, 0, 0, 1);
 				transform(anim[0], -60, 0, -89, 0, 0, 0, 1);
 			}
+			// console.log("X: "+jugador2[0].position.x);
 
 			if (anim2[1].position.z > -100) {
 				anim2[1].translateZ(direction.z * deltaTime * 12);
@@ -225,6 +262,10 @@
 				transform(laMoneda[0], monedaPosi.x, 1.5, monedaPosi.z, 90, 0, 0, 1.5);
 
 				// nuevo vagón detrás
+				var nuevoVagon = vagones1[0].clone();
+				transform(nuevoVagon, jugador1[0].position.x, 0, jugador1[0].position.z, 0, 0, 0, 1);
+				vagones1.push(nuevoVagon);
+				scene.add(vagones1[vagones1.length - 1]);
 
 				console.log("Si hay colision moneda vagon derecho");
 			} else if (jugador2[0].position.distanceTo(laMoneda[0].position) < 3) {
@@ -239,11 +280,11 @@
 			/* 
 			jugadores[1].translateZ(-(velocidad * deltaTime));
 			
-			console.log("Si hay colision");
-			*/
-		
-			renderer.render(scene, camera);
 			
+			*/
+
+			renderer.render(scene, camera);
+
 		}
 
 		function setupScene() {
@@ -272,7 +313,7 @@
 			grid.position.y = 1;
 			scene.add(grid);
 
-			loadOBJWithMTL("assets/obj/", "vagon02.obj", "vagon02.mtl", (jugador) => {//izquierda
+			loadOBJWithMTL("assets/obj/", "SM_Veh_Metro_01.obj", "main.mtl", (jugador) => {//izquierda
 				transform(jugador, -30, 0, 0, 0, 0, 0, 1);
 				scene.add(jugador);
 				jugador2.push(jugador);
@@ -282,6 +323,23 @@
 				scene.add(jugador);
 				jugador1.push(jugador);
 			});
+
+			// carga de vagones cuadrados 
+
+			loadOBJWithMTL("assets/obj/", "vagon02.obj", "vagon02.mtl", (vagon) => {//izquierda
+				transform(vagon, 0, 0, 70, 90, 0, 0, 1);
+				scene.add(vagon);
+				vagones1.push(vagon);
+			});
+
+			loadOBJWithMTL("assets/obj/", "vagon02.obj", "vagon02.mtl", (vagon) => {//izquierda
+				transform(vagon, 0, 0, 70, 0, 0, 0, 1);
+				scene.add(vagon);
+				vagones2.push(vagon);
+			});
+
+
+			// -------------------------
 			loadOBJWithMTL("assets/obj/", "SM_Env_Tile_Grass_01.obj", "main.mtl", (plane) => {
 				plane.scale.set(100, 1, 100);
 				plane.position.set(-200, 0, -200);
