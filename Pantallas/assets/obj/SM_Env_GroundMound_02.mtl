@@ -1,0 +1,14 @@
+newmtl SM_Env_Tile_Sand_01:lambert2SG
+illum 4
+Kd 1.00 1.00 1.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+map_Kd SimpleTrains_Texture_01.png
+Ni 1.00
+newmtl lambert2SG
+illum 4
+Kd 1.00 1.00 1.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+map_Kd SimpleTrains_Texture_01.png
+Ni 1.00
