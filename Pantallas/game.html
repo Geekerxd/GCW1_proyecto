@@ -28,6 +28,20 @@
 
 
 	<script type="text/javascript">
+		var movementSpeed = 5;
+		var totalObjects = 50;
+		var objectSize = 1;
+		var sizeRandomness = 1000;
+		var colors = [0xFF0FFF, 0xCCFF00, 0xFF000F, 0x996600, 0xFFFFFF];
+		var dirs = [];
+		var parts = [];
+
+		var particleSystem;
+		var particleCount = 500;
+		var particles;
+		var rango;
+		var tempo = 100;
+
 		var scene;
 		var camera;
 		var renderer;
@@ -45,7 +59,11 @@
 		var lastPosition1 = [];
 		var lastPosition2 = [];
 
-		var queNivel = 1;
+
+		var CoordPlayer1 = [];
+		var CoordPlayer2 = [];
+
+		var queNivel = 2;
 		var anim = [];
 		var anim2 = [];
 		var anim3 = [];
@@ -57,7 +75,7 @@
 
 		var direction = new THREE.Vector3(0, 0, 1);
 		var direction2 = new THREE.Vector3(0, 0, 1);
-		var direction3 = new THREE.Vector3(0,0,1);
+		var direction3 = new THREE.Vector3(0, 0, 1);
 		var arriba = false, derecha = false;
 		var integer = [50], integer2 = 0;
 		var integer3 = 0, integer4 = 0;
@@ -73,7 +91,47 @@
 		var nivel2Contador2 = 0;
 		var nivel3Contador = 0;
 
+		function explode(x, y) {
+			parts.push(new ExplodeAnimation(x, y));
+		}
+		function ExplodeAnimation(x, y) {
+			var geometry = new THREE.Geometry();
 
+			for (i = 0; i < totalObjects; i++) {
+				var vertex = new THREE.Vector3();
+				vertex.x = x;
+				vertex.y = 0;
+				vertex.z = y;
+
+				geometry.vertices.push(vertex);
+				dirs.push({ x: (Math.random() * movementSpeed) - (movementSpeed / 2), y: (Math.random() * movementSpeed) - (movementSpeed / 2), z: (Math.random() * movementSpeed) - (movementSpeed / 2) });
+			}
+			var material = new THREE.PointsMaterial({ size: objectSize, color: colors[2] });
+			var particles2 = new THREE.Points(geometry, material);
+
+			this.object = particles2;
+			this.status = true;
+
+			this.xDir = (Math.random() * movementSpeed) - (movementSpeed / 2);
+			this.yDir = (Math.random() * movementSpeed) - (movementSpeed / 2);
+			this.zDir = (Math.random() * movementSpeed) - (movementSpeed / 2);
+
+			scene.add(this.object);
+
+			this.update = function () {
+				if (this.status == true) {
+					var pCount = totalObjects;
+					while (pCount--) {
+						var particle = this.object.geometry.vertices[pCount]
+						//particle.y += dirs[pCount].y;
+						particle.x += dirs[pCount].x;
+						particle.z += dirs[pCount].z;
+					}
+					this.object.geometry.verticesNeedUpdate = true;
+				}
+			}
+
+		}
 
 		function randInRange(a, b) {
 			return a + Math.floor((b - a) * Math.random());
@@ -179,6 +237,29 @@
 		});
 
 		function render() {
+			if (queNivel == 2) {
+				particleSystem.translateY(-1 * deltaTime);
+				tempo -= 2 * (1 * deltaTime);
+				if (tempo < 0) {
+					scene.remove(particleSystem);
+					particleSystem.position.y = 80;
+					tempo = 100;
+				} else {
+					scene.add(particleSystem);
+				}
+				var pCount = particleCount;
+				while (pCount--) {
+					var particle = particles.vertices[pCount];
+					if (particle.y < -200) {
+						particle.y = 200;
+						particle.velocity.y = 0;
+					}
+					particle.velocity.y -= Math.random() * .1;
+					particle.add(particle.velocity);
+				}
+				particleSystem.geometry.__dirtyVertices = true;
+			}
+
 			requestAnimationFrame(render);
 			deltaTime = clock.getDelta();
 			var velocidad = 20;
@@ -196,24 +277,28 @@
 
 			// Seguimiento de vagones:
 			var pos1 = new THREE.Vector3(jugador1[0].position.x, 0, jugador1[0].position.z);
+			var pos2 = new THREE.Vector3(jugador2[0].position.x, 0, jugador2[0].position.z);
 
 			lastPosition1.push(pos1);
+			lastPosition2.push(pos2);
 
-			console.log("X: "+ jugador1[0].position.x + " y: "+ jugador1[0].position.z);
+			//console.log("X: " + jugador1[0].position.x + " y: " + jugador1[0].position.z);
 
 
 			for (let i = 1; i < vagones1.length; i++) {
 
-				var ultiPosi = lastPosition1[lastPosition1.length -15-i*7];
+				var ultiPosi = lastPosition1[lastPosition1.length - 15 - i * 7];
+
 				transform(vagones1[i], ultiPosi.x, 0, ultiPosi.z, 0, 0, 0, 1);
-				//vagones1[i].translateX(ultiPosi.x);
-				//vagones1[i].translateZ(ultiPosi.z);
-
-				
-
 
 			}
 
+			for (let i = 1; i < vagones2.length; i++) {
+
+				var ultiPosi = lastPosition2[lastPosition2.length - 15 - i * 7];
+				transform(vagones2[i], ultiPosi.x, 0, ultiPosi.z, 0, 0, 0, 1);
+
+			}
 
 
 
@@ -226,13 +311,13 @@
 			laMoneda[0].rotateZ(deltaTime);
 
 			////////////////////////////////Animacion del nivel////////////////////////////////////////////
-			if(queNivel == 1){
+			if (queNivel == 1) {
 				nivel1Anim();
 			}
-			else if(queNivel == 2){
+			else if (queNivel == 2) {
 				nivel2Anim();
 			}
-			else if(queNivel == 3){
+			else if (queNivel == 3) {
 				nivel3Anim();
 			}
 			//////////////////////////////////////////////////////////////////////////////////////////////////
@@ -242,6 +327,7 @@
 
 			if (integer[0] == 1) {
 				jugador1[0].rotateY(THREE.Math.degToRad(90));
+
 				integer[0] = 0;
 			}
 			if (integer[1] == 1) {
@@ -275,7 +361,7 @@
 
 				// nuevo vagón detrás
 				var nuevoVagon = vagones1[0].clone();
-				transform(nuevoVagon, jugador1[0].position.x, 0, jugador1[0].position.z, 0, 0, 0, 1);
+				transform(nuevoVagon, jugador1[0].position.x - 10, 0, jugador1[0].position.z - 10, 0, 0, 0, 1);
 				vagones1.push(nuevoVagon);
 				scene.add(vagones1[vagones1.length - 1]);
 
@@ -286,20 +372,120 @@
 				transform(laMoneda[0], monedaPosi.x, 1.5, monedaPosi.z, 90, 0, 0, 1.5);
 
 				// nuevo vagón detrás
+				var nuevoVagon = vagones2[0].clone();
+				transform(nuevoVagon, jugador2[0].position.x - 10, 0, jugador2[0].position.z - 10, 0, 0, 0, 1);
+				vagones2.push(nuevoVagon);
+				scene.add(vagones2[vagones2.length - 1]);
+
 				console.log("Si hay colision moneda vagon izqu");
 			}
 
-			/* 
-			jugadores[1].translateZ(-(velocidad * deltaTime));
-			
-			
-			*/
+			//checa colision de jugador1 a los vagones de jugador2
+			for (let i = 0; i < vagones2.length; i++) {
+				if (jugador1[0].position.distanceTo(vagones2[i].position) < 3) {
+
+					explode(jugador1[0].position.x, jugador1[0].position.z);
+
+
+				}
+			}
+			//checa colision de jugador2 a los vagones de jugador1
+			for (let i = 0; i < vagones1.length; i++) {
+				if (jugador2[0].position.distanceTo(vagones1[i].position) < 3) {
+
+					explode(jugador2[0].position.x, jugador2[0].position.z);
+
+
+				}
+			}
+
+			//checa colision de jugador1 a los vagones de jugador1
+			for (let i = 0; i < vagones1.length; i++) {
+				if (jugador1[0].position.distanceTo(vagones1[i].position) < 3) {
+					if (!vagones1.length < 5) {
+						explode(jugador1[0].position.x, jugador1[0].position.z);
+					}
+
+
+
+				}
+			}
+
+			//checa colision de jugador2 a los vagones de jugador2
+			for (let i = 0; i < vagones2.length; i++) {
+				if (jugador2[0].position.distanceTo(vagones2[i].position) < 3) {
+					if (!vagones2.length < 5) {
+						explode(jugador2[0].position.x, jugador2[0].position.z);
+					}
+
+
+
+				}
+			}
+
+
+
+			if (jugador1[0].position.x > 50 || jugador1[0].position.x < -50 || jugador1[0].position.z > 50 || jugador1[0].position.z < -50) {
+
+
+
+
+				explode(jugador1[0].position.x, jugador1[0].position.z);
+
+				if (jugador1[0].position.x > 50) {
+					jugador1[0].position.x = -49;
+				}
+				else if (jugador1[0].position.x < -50) {
+					jugador1[0].position.x = 49;
+				}
+				else if (jugador1[0].position.z > 50) {
+					jugador1[0].position.z = -49;
+				}
+				else if (jugador1[0].position.z < -50) {
+					jugador1[0].position.z = 49;
+				}
+
+
+
+			}
+
+
+
+
+
+			if (jugador2[0].position.x > 50 || jugador2[0].position.x < -50 || jugador2[0].position.z > 50 || jugador2[0].position.z < -50) {
+				explode(jugador2[0].position.x, jugador2[0].position.z);
+
+				if (jugador2[0].position.x > 50) {
+					jugador2[0].position.x = -49;
+				}
+				else if (jugador2[0].position.x < -50) {
+					jugador2[0].position.x = 49;
+				}
+				else if (jugador2[0].position.z > 50) {
+					jugador2[0].position.z = -49;
+				}
+				else if (jugador2[0].position.z < -50) {
+					jugador2[0].position.z = 49;
+				}
+
+			}
+
+
+			///particles
+			var pCount = parts.length;
+			while (pCount--) {
+				parts[pCount].update();
+			}
+			///
 
 			renderer.render(scene, camera);
 
 		}
 
 		function setupScene() {
+			
+
 			var visibleSize = { width: window.innerWidth, height: window.innerHeight };
 			clock = new THREE.Clock();
 			scene = new THREE.Scene();
@@ -315,13 +501,13 @@
 
 			var ambientLight;
 
-			if(queNivel == 1){
+			if (queNivel == 1) {
 				ambientLight = new THREE.AmbientLight(new THREE.Color(1, 1, 1), 1.0);
 			}
-			else if(queNivel == 2){
+			else if (queNivel == 2) {
 				ambientLight = new THREE.AmbientLight(new THREE.Color(0.9, 0.9, 1), 1.0);
 			}
-			else if(queNivel == 3){
+			else if (queNivel == 3) {
 				ambientLight = new THREE.AmbientLight(new THREE.Color(1, 1, 1), 1.0);
 			}
 			scene.add(ambientLight);
@@ -361,22 +547,47 @@
 			});
 
 			////////////////////////////////CARGA DE ESCENARIOS/////////////////////////////////////////
-			if(queNivel == 1){
+			if (queNivel == 1) {
 				nivel1();
 			}
-			else if(queNivel == 2){
+			else if (queNivel == 2) {
 				nivel2();
 			}
-			else if(queNivel == 3){
+			else if (queNivel == 3) {
 				nivel3();
 			}
-			else{
-				alert ("No ha seleccionado ningun nivel.")
+			else {
+				alert("No ha seleccionado ningun nivel.")
 			}
 			///////////////////////////////////////////////////////////////////////////////////////////
 
+			if (queNivel == 2) {
+                rango = 0.3;
+                particles = new THREE.Geometry();
+                var pMaterial = new THREE.PointsMaterial({
+                    color: 0xFFFFFF,
+                    size: 1
+                });
+                for (var p = 0; p < particleCount; p++) {
+                    var pX = rango * (Math.random() * 500 - 250),
+                        pY = rango * (Math.random() * 500 - 250),
+                        pZ = rango * (Math.random() * 500 - 250),
+                        particle = new THREE.Vector3(pX, pY, pZ);
 
+                    particle.velocity = new THREE.Vector3(0, -Math.random(), 0);
+
+                    particles.vertices.push(particle);
+                }
+                particleSystem = new THREE.Points(
+                    particles,
+                    pMaterial);
+
+                scene.add(particleSystem);
+            }
 			$("#scene-section").append(renderer.domElement);
+
+
+
 		}
 
 		function transform(model, posX, posY, posZ, rotX, rotY, rotZ, esc) {
