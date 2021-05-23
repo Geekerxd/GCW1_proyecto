@@ -133,6 +133,7 @@
 
 		}
 
+
 		function randInRange(a, b) {
 			return a + Math.floor((b - a) * Math.random());
 		}
@@ -164,30 +165,43 @@
 			//document.addEventListener('keyup', onKeyUp);
 			gamepause(false);
 
+
+			window.addEventListener('gamepadconnected', event => {
+				console.log("Control conectado");
+				console.log(event.gamepad);
+				onControl = true;
+			});
+
+			window.addEventListener('gamepaddisconnected', event => {
+				console.log("Control desconectado");
+				onControl = false;
+			});
+
 			/*
+			//particulas de nieve
 			if (queNivel == 2) {
-                rango = 0.3;
-                particles = new THREE.Geometry();
-                var pMaterial = new THREE.PointsMaterial({
-                    color: 0xFFFFFF,
-                    size: 1
-                });
-                for (var p = 0; p < particleCount; p++) {
-                    var pX = rango * (Math.random() * 500 - 250),
-                        pY = rango * (Math.random() * 500 - 250),
-                        pZ = rango * (Math.random() * 500 - 250),
-                        particle = new THREE.Vector3(pX, pY, pZ);
+				rango = 0.3;
+				particles = new THREE.Geometry();
+				var pMaterial = new THREE.PointsMaterial({
+					color: 0xFFFFFF,
+					size: 1
+				});
+				for (var p = 0; p < particleCount; p++) {
+					var pX = rango * (Math.random() * 500 - 250),
+						pY = rango * (Math.random() * 500 - 250),
+						pZ = rango * (Math.random() * 500 - 250),
+						particle = new THREE.Vector3(pX, pY, pZ);
 
-                    particle.velocity = new THREE.Vector3(0, -Math.random(), 0);
+					particle.velocity = new THREE.Vector3(0, -Math.random(), 0);
 
-                    particles.vertices.push(particle);
-                }
-                particleSystem = new THREE.Points(
-                    particles,
-                    pMaterial);
+					particles.vertices.push(particle);
+				}
+				particleSystem = new THREE.Points(
+					particles,
+					pMaterial);
 
-                scene.add(particleSystem);
-            }*/
+				scene.add(particleSystem);
+			}*/
 
 
 			render();
@@ -264,6 +278,7 @@
 
 		function render() {
 			/*
+			//particulas de nieve
 			if (queNivel == 2) {
 				particleSystem.translateY(-1 * deltaTime);
 				tempo -= 2 * (1 * deltaTime);
@@ -349,7 +364,10 @@
 			}
 			//////////////////////////////////////////////////////////////////////////////////////////////////
 
-
+			var gamepads = navigator.getGamepads();
+			if (gamepads[0].buttons[15].pressed) { alert("==>"); }
+			if (gamepads[0].buttons[14].pressed) { alert("<=="); }
+			
 			// Esto pasa cuando toca las teclas:
 
 			if (integer[0] == 1) {
@@ -511,7 +529,7 @@
 		}
 
 		function setupScene() {
-			
+
 
 			var visibleSize = { width: window.innerWidth, height: window.innerHeight };
 			clock = new THREE.Clock();
@@ -588,7 +606,7 @@
 			}
 			///////////////////////////////////////////////////////////////////////////////////////////
 
-			
+
 			$("#scene-section").append(renderer.domElement);
 
 
