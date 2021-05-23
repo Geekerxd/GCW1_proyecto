@@ -122,10 +122,10 @@
 				if (this.status == true) {
 					var pCount = totalObjects;
 					while (pCount--) {
-						var particle = this.object.geometry.vertices[pCount]
+						var particle2 = this.object.geometry.vertices[pCount]
 						//particle.y += dirs[pCount].y;
-						particle.x += dirs[pCount].x;
-						particle.z += dirs[pCount].z;
+						particle2.x += dirs[pCount].x;
+						particle2.z += dirs[pCount].z;
 					}
 					this.object.geometry.verticesNeedUpdate = true;
 				}
@@ -163,6 +163,32 @@
 			//document.addEventListener('keydown', onKeyDown);
 			//document.addEventListener('keyup', onKeyUp);
 			gamepause(false);
+
+			/*
+			if (queNivel == 2) {
+                rango = 0.3;
+                particles = new THREE.Geometry();
+                var pMaterial = new THREE.PointsMaterial({
+                    color: 0xFFFFFF,
+                    size: 1
+                });
+                for (var p = 0; p < particleCount; p++) {
+                    var pX = rango * (Math.random() * 500 - 250),
+                        pY = rango * (Math.random() * 500 - 250),
+                        pZ = rango * (Math.random() * 500 - 250),
+                        particle = new THREE.Vector3(pX, pY, pZ);
+
+                    particle.velocity = new THREE.Vector3(0, -Math.random(), 0);
+
+                    particles.vertices.push(particle);
+                }
+                particleSystem = new THREE.Points(
+                    particles,
+                    pMaterial);
+
+                scene.add(particleSystem);
+            }*/
+
 
 			render();
 		});
@@ -237,6 +263,7 @@
 		});
 
 		function render() {
+			/*
 			if (queNivel == 2) {
 				particleSystem.translateY(-1 * deltaTime);
 				tempo -= 2 * (1 * deltaTime);
@@ -258,7 +285,7 @@
 					particle.add(particle.velocity);
 				}
 				particleSystem.geometry.__dirtyVertices = true;
-			}
+			}*/
 
 			requestAnimationFrame(render);
 			deltaTime = clock.getDelta();
@@ -561,29 +588,7 @@
 			}
 			///////////////////////////////////////////////////////////////////////////////////////////
 
-			if (queNivel == 2) {
-                rango = 0.3;
-                particles = new THREE.Geometry();
-                var pMaterial = new THREE.PointsMaterial({
-                    color: 0xFFFFFF,
-                    size: 1
-                });
-                for (var p = 0; p < particleCount; p++) {
-                    var pX = rango * (Math.random() * 500 - 250),
-                        pY = rango * (Math.random() * 500 - 250),
-                        pZ = rango * (Math.random() * 500 - 250),
-                        particle = new THREE.Vector3(pX, pY, pZ);
-
-                    particle.velocity = new THREE.Vector3(0, -Math.random(), 0);
-
-                    particles.vertices.push(particle);
-                }
-                particleSystem = new THREE.Points(
-                    particles,
-                    pMaterial);
-
-                scene.add(particleSystem);
-            }
+			
 			$("#scene-section").append(renderer.domElement);
 
 
