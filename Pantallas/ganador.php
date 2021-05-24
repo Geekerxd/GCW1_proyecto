@@ -38,19 +38,11 @@
     <script type="text/javascript" src="js/three/OBJLoader.js"></script>
     <script type="text/javascript" src="ganador.js"></script>
 
+    
+
 
 </head>
 <body>
-
-<?php
-session_start();
-echo $_SESSION["ganadoremail"];
-echo $_SESSION["ganadorcontrasena"];
-echo $_SESSION["ganadorpuntaje"];
-echo $_SESSION["perdedoremail"];
-echo $_SESSION["perdedorcontrasena"];
-echo $_SESSION["perdedorpuntaje"];
-?>
     
 <div class="pantallaGanador">
       <div class="algo">
@@ -132,6 +124,8 @@ echo $_SESSION["perdedorpuntaje"];
       integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
       crossorigin="anonymous"
     ></script>
+
+    
 
 </body>
 </html>

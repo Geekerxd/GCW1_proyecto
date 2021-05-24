@@ -133,6 +133,11 @@
 
       var puntajejugador1 = 0.0;
       var puntajejugador2 = 0.0;
+      var yasebajo1 = false;
+      var yasebajo2 = false;
+
+      var contColision = 0;
+      var yahuboparticulas = false;
 
 
       function sendDatosGanador1(puntos1, puntos2){
@@ -155,7 +160,7 @@
             data: dataToSend,
             success: function(data) {
                 //obtenemos el mensaje enviado desde el servidor SIN formato JSON
-                alert("Se subieron los resultados!");
+                //alert("Se subieron los resultados!");
 
                 
             },
@@ -185,7 +190,7 @@
             data: dataToSend,
             success: function(data) {
                 //obtenemos el mensaje enviado desde el servidor SIN formato JSON
-                alert("Se subieron los resultados!");
+                //alert("Se subieron los resultados!");
 
                 
             },
@@ -472,6 +477,14 @@
 
         if(hayColision1 == true){
 
+          var selectedObject = scene.getObjectByName(jugador1);
+          scene.remove(selectedObject);
+
+          if(yasebajo1 == false){
+            puntajejugador1 = puntajejugador1 - 50;
+            yasebajo1 = true;
+          }
+
           var puntajeFinal1 = puntajejugador1;
           var puntajeFinal2 = puntajejugador2;
 
@@ -488,14 +501,24 @@
             
           }
 
-          hayColision1 = false;
-          location.href ="ganador.php";
+          contColision += 0.1;
+
+          if(contColision >= 5){
+            location.href ="ganador.php";
+          }
 
 
         }
 
         if(hayColision2 == true){
 
+          
+
+          if(yasebajo2 == false){
+            puntajejugador2 = puntajejugador2 - 50;
+            yasebajo2 = true;
+          }
+
           var puntajeFinal1 = puntajejugador1;
           var puntajeFinal2 = puntajejugador2;
 
@@ -510,8 +533,11 @@
 
           }
 
-          hayColision2 = false;
-          location.href ="ganador.php";
+          contColision += 0.1;
+
+          if(contColision >= 5){
+            location.href ="ganador.php";
+          }
 
 
         }
@@ -567,7 +593,7 @@
         //tren inicial izquierda
         direction2 = keysQueue2.length > 0 ? keysQueue2.pop(0) : direction2;
 
-        if(esPausa == false){
+        if(esPausa == false && hayColision1 == false && hayColision2 == false){
         jugador2[0].translateX(direction2.x * deltaTime * velocidad);
         jugador2[0].translateZ(direction2.z * deltaTime * velocidad);
 
@@ -592,7 +618,7 @@
 
         //console.log("X: " + jugador1[0].position.x + " y: " + jugador1[0].position.z);
         
-        if(esPausa == false){
+        if(esPausa == false && hayColision1 == false && hayColision2 == false){
         for (let i = 1; i < vagones1.length; i++) {
           var ultiPosi = lastPosition1[lastPosition1.length - 15 - i * 7];
 
@@ -740,14 +766,20 @@
         //checa colision de jugador1 a los vagones de jugador2
         for (let i = 0; i < vagones2.length; i++) {
           if (jugador1[0].position.distanceTo(vagones2[i].position) < 3) {
-            explode(jugador1[0].position.x, jugador1[0].position.z);
+            if(yahuboparticulas == false){
+              explode(jugador1[0].position.x, jugador1[0].position.z);
+              yahuboparticulas = true;
+            }
             hayColision2 = true;
           }
         }
         //checa colision de jugador2 a los vagones de jugador1
         for (let i = 0; i < vagones1.length; i++) {
           if (jugador2[0].position.distanceTo(vagones1[i].position) < 3) {
-            explode(jugador2[0].position.x, jugador2[0].position.z);
+            if(yahuboparticulas == false){
+              explode(jugador2[0].position.x, jugador2[0].position.z);
+              yahuboparticulas = true;
+            }
             hayColision1 = true;
           }
         }
@@ -756,7 +788,10 @@
         for (let i = 0; i < vagones1.length; i++) {
           if (jugador1[0].position.distanceTo(vagones1[i].position) < 3) {
             if (!vagones1.length < 5) {
-              explode(jugador1[0].position.x, jugador1[0].position.z);
+              if(yahuboparticulas == false){
+                explode(jugador1[0].position.x, jugador1[0].position.z);
+                yahuboparticulas = true;
+              }
               hayColision2 = true;
             }
           }
@@ -766,7 +801,10 @@
         for (let i = 0; i < vagones2.length; i++) {
           if (jugador2[0].position.distanceTo(vagones2[i].position) < 3) {
             if (!vagones2.length < 5) {
+              if(yahuboparticulas == false){
               explode(jugador2[0].position.x, jugador2[0].position.z);
+              yahuboparticulas = true;
+              }
               hayColision1 = true;
             }
           }
@@ -778,10 +816,13 @@
           jugador1[0].position.z > 50 ||
           jugador1[0].position.z < -50
         ) {
-          explode(jugador1[0].position.x, jugador1[0].position.z);
+          if(yahuboparticulas == false){
+            explode(jugador1[0].position.x, jugador1[0].position.z);
+            yahuboparticulas = true;
+          }
           hayColision2 = true;
 
-          if (jugador1[0].position.x > 50) {
+          /*if (jugador1[0].position.x > 50) {
             jugador1[0].position.x = -49;
           } else if (jugador1[0].position.x < -50) {
             jugador1[0].position.x = 49;
@@ -789,7 +830,7 @@
             jugador1[0].position.z = -49;
           } else if (jugador1[0].position.z < -50) {
             jugador1[0].position.z = 49;
-          }
+          }*/
         }
 
         if (
@@ -798,10 +839,13 @@
           jugador2[0].position.z > 50 ||
           jugador2[0].position.z < -50
         ) {
-          explode(jugador2[0].position.x, jugador2[0].position.z);
+          if(yahuboparticulas == false){
+            explode(jugador2[0].position.x, jugador2[0].position.z);
+            yahuboparticulas = true;
+          }
           hayColision1 = true;
 
-          if (jugador2[0].position.x > 50) {
+          /*if (jugador2[0].position.x > 50) {
             jugador2[0].position.x = -49;
           } else if (jugador2[0].position.x < -50) {
             jugador2[0].position.x = 49;
@@ -809,7 +853,7 @@
             jugador2[0].position.z = -49;
           } else if (jugador2[0].position.z <script -50) {
             jugador2[0].position.z = 49;
-          }
+          }*/
         }
 
         ///particles
@@ -879,6 +923,7 @@
             transform(jugador, -30, 0, 0, 0, 0, 0, 1);
             scene.add(jugador);
             jugador2.push(jugador);
+            jugador2.name = "jugador2";
           }
         );
         loadOBJWithMTL(
@@ -890,6 +935,7 @@
             transform(jugador, 30, 0, 0, 0, 0, 0, 1);
             scene.add(jugador);
             jugador1.push(jugador);
+            jugador1.name = "jugador1";
           }
         );
 
