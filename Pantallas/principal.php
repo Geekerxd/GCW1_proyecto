@@ -14,6 +14,9 @@
   <script type="text/javascript" src="js/three/three.js"></script>
   <script type="text/javascript" src="js/singUp.js"></script>
   <script type="text/javascript" src="js/logIn.js"></script>
+
+  <script type="text/javascript" src="usuario.js"></script>
+  <script type="text/javascript" src="principal.js"></script>
   
 
   <title>Main</title>
@@ -71,6 +74,9 @@
 </head>
 
 <body>
+
+
+
   <video autoplay muted loop id="myVideo">
     <source src="Secuencia 01.mp4" type="video/mp4">
     Your browser does not support HTML5 video.
@@ -127,7 +133,9 @@
           </ul>
           <div class="tab-content" id="pills-tabContent">
             <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
-              <form name="myForm" action="game.html" onsubmit=" return logIn()">
+              <form name="myForm" action="game.php">
+                
+                  
                 <div class="form-group">
                   <div class="text-center">
                     <small id="emailHelp" class="form-text text-muted">Sign in quickly using</small>
@@ -136,52 +144,78 @@
                     <br><br>
                     <small id="emailHelp" class="form-text text-muted">Or use your email</small>
                   </div>
-                  <label for="exampleInputEmail1">Email address</label>
-                  <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
-                    placeholder="Enter email" required>
-                  <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone
-                    else.</small>
                 </div>
-                <div class="form-group">
-                  <label for="exampleInputPassword1">Password</label>
-                  <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password"
-                    required>
+                <div>
+                  <div>
+                    <label class="labelJugador" for="">First Player</label><br>
+                    <label for="exampleInputEmail1">Email address</label>
+                    <input type="email" class="form-control" id="email1_1" aria-describedby="emailHelp"
+                      placeholder="Enter email" required>
+                    <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone
+                      else.</small>
+                  </div>
+                
+                  <div class="form-group">
+                    <label for="exampleInputPassword1">Password</label>
+                    <input type="password" class="form-control" id="password1_1" placeholder="Password"
+                      required>
+                  </div>
                 </div>
-                <div class="form-check">
+                <!--<div class="form-check">
                   <input type="checkbox" class="form-check-input" id="exampleCheck1">
                   <label class="form-check-label" for="exampleCheck1">Remember me</label>
+                </div>-->
+                <div>
+                  <div>
+                    <label class="labelJugador" for="">Second Player</label><br>
+                    <label for="exampleInputEmail1">Email address</label>
+                    <input type="email" class="form-control" id="email1_2" aria-describedby="emailHelp"
+                      placeholder="Enter email" required>
+                    <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone
+                      else.</small>
+                  </div>
+                
+                  <div class="form-group">
+                    <label for="exampleInputPassword1">Password</label>
+                    <input type="password" class="form-control" id="password1_2" placeholder="Password"
+                      required>
+                  </div>
                 </div>
                 <br>
                 <div class="text-center">
-                  <button id="btnSubmit"  class="btn btn-success" >Submit</button>
+                  <button id="btnSubmit"  class="btn btn-success">Play</button>
                 </div>
               </form>
               <br>
-              <div class="text-center">
-                <button class="btn btn-light"><a class="link" href="game.html">Play</a></button>
-              </div>
+              <!--<div class="text-center">
+                <button id="play" class="btn btn-light"><a class="link" href="game.php">Play</a></button>
+              </div>-->
             </div>
             <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
-              <form>
+              <form action="upload.php" method="POST" enctype="multipart/form-data">
                 <div class="form-group">
                   <label for="nombre">User</label>
-                  <input class="form-control" id="nombre" placeholder="Name" required>
+                  <input type="text" class="form-control" id="nombre" placeholder="Name" required>
                 </div>
                 <div class="form-group">
-                  <label for="exampleInputEmail2">Email address</label>
-                  <input type="email" class="form-control" id="exampleInputEmail2" aria-describedby="emailHelp"
+                  <label for="email2">Email address</label>
+                  <input type="email" class="form-control" id="email2" aria-describedby="emailHelp"
                     placeholder="Enter email" required>
                   <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone
                     else.</small>
                 </div>
                 <div class="form-group">
-                  <label for="exampleInputPassword2">Password</label>
-                  <input type="password" class="form-control" id="exampleInputPassword2" placeholder="Password"
+                  <label for="password2">Password</label>
+                  <input type="password" class="form-control" id="password2" placeholder="Password"
                     required>
+                </div>
+                <div class="form-group">
+                  <label for="foto2">Profile photo</label>
+                  <input type="file" class="form-control" name="image" id="image" required>
                 </div>
                 <br>
                 <div class="text-center">
-                  <button id="btnSubmit2" type="btnsubmit" class="btn btn-success" onclick="singUp()">Submit</button>
+                  <button id="btnSubmit2" type="submit" class="btn btn-success">Register</button>
                 </div>
               </form>
             </div>
@@ -247,6 +281,7 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
     integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
     crossorigin="anonymous"></script>
+
 </body>
 
 </html>

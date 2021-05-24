@@ -55,6 +55,7 @@
       type="text/javascript"
       src="js/escenarios/nivel3/nivel3Anim.js"
     ></script>
+    <script type="text/javascript" src="game.js"></script>
 
     <script type="text/javascript">
       var movementSpeed = 5;
@@ -92,7 +93,7 @@
       var CoordPlayer1 = [];
       var CoordPlayer2 = [];
 
-      var queNivel = 2;
+      var queNivel = Math.floor(Math.random() * 3) + 1;
       var anim = [];
       var anim2 = [];
       var anim3 = [];
@@ -117,6 +118,10 @@
         padding = 0.15;
 
       var pause;
+      var esPausa = false;
+
+      var hayColision = false;
+
       var raycaster;
       var objetosConColision = [];
       var hola = [];
@@ -124,6 +129,9 @@
       var nivel2Contador = 0;
       var nivel2Contador2 = 0;
       var nivel3Contador = 0;
+
+      var puntajejugador1 = 0.0;
+      var puntajejugador2 = 0.0;
 
       function explode(x, y) {
         parts.push(new ExplodeAnimation(x, y));
@@ -189,7 +197,7 @@
         // la moneda
         var monedaPosi = spawnAppleVector();
         loadOBJWithMTL("assets/obj/", "coin3.obj", "coin3.mtl", (moneda) => {
-          console.log("x: " + monedaPosi.x + " Z: " + monedaPosi.z);
+          //console.log("x: " + monedaPosi.x + " Z: " + monedaPosi.z);
 
           laMoneda.push(moneda);
           transform(
@@ -312,6 +320,15 @@
       });
 
       function render() {
+
+        if(hayColision == true){
+
+          $("#modal2").show();
+
+
+        }
+
+
         /*
 			//particulas de nieve
 			if (queNivel == 2) {
@@ -341,32 +358,34 @@
         deltaTime = clock.getDelta();
         var velocidad = 20;
 
-        if (f > 10) {
+        /*if (f > 10) {
           var gamepads = navigator.getGamepads();
           if (gamepads[0].buttons[15].pressed) {
             integer[1] = 1;
-            console.log("izq");
+            //console.log("izq");
             keysQueue.push(new THREE.Vector3(0, 0, 1));
 			f = 0;
           }
           if (gamepads[0].buttons[14].pressed) {
             integer[0] = 1;
-            console.log("der");
+            //console.log("der");
             keysQueue.push(new THREE.Vector3(0, 0, 1));
 			f = 0;
           }
-        }f++;
+        }f++;*/
 
         //tren inicial derecha
         direction = keysQueue.length > 0 ? keysQueue.pop(0) : direction;
         //tren inicial izquierda
         direction2 = keysQueue2.length > 0 ? keysQueue2.pop(0) : direction2;
 
+        if(esPausa == false){
         jugador2[0].translateX(direction2.x * deltaTime * velocidad);
         jugador2[0].translateZ(direction2.z * deltaTime * velocidad);
 
         jugador1[0].translateX(direction.x * deltaTime * velocidad);
         jugador1[0].translateZ(direction.z * deltaTime * velocidad);
+        }
 
         // Seguimiento de vagones:
         var pos1 = new THREE.Vector3(
@@ -384,17 +403,25 @@
         lastPosition2.push(pos2);
 
         //console.log("X: " + jugador1[0].position.x + " y: " + jugador1[0].position.z);
-
+        
+        if(esPausa == false){
         for (let i = 1; i < vagones1.length; i++) {
           var ultiPosi = lastPosition1[lastPosition1.length - 15 - i * 7];
 
+          
           transform(vagones1[i], ultiPosi.x, 0, ultiPosi.z, 0, 0, 0, 1);
+          
         }
 
         for (let i = 1; i < vagones2.length; i++) {
           var ultiPosi = lastPosition2[lastPosition2.length - 15 - i * 7];
+
+          
           transform(vagones2[i], ultiPosi.x, 0, ultiPosi.z, 0, 0, 0, 1);
+          
         }
+        }
+        
 
         // Animaciones:
         laMoneda[0].rotateZ(deltaTime);
@@ -459,6 +486,8 @@
             1.5
           );
 
+          
+
           // nuevo vagón detrás
           var nuevoVagon = vagones1[0].clone();
           transform(
@@ -475,7 +504,13 @@
           scene.add(vagones1[vagones1.length - 1]);
 
           console.log("Si hay colision moneda vagon derecho");
-        } else if (jugador2[0].position.distanceTo(laMoneda[0].position) < 3) {
+
+          $(".JugadorRight input").remove()
+          puntajejugador2 += 5;
+          $(".JugadorRight .puntaje2").append("<input class='puntaje' id='puntajejugador2' value="+puntajejugador2+" style='width: 50%; background-color: rgba(239, 184, 16, 0.7); border-radius: 10px'></input>");
+          console.log(puntajejugador1);
+        } 
+        else if (jugador2[0].position.distanceTo(laMoneda[0].position) < 3) {
           // nueva posición de la moneda
           var monedaPosi = spawnAppleVector();
           transform(
@@ -488,6 +523,8 @@
             0,
             1.5
           );
+
+          
 
           // nuevo vagón detrás
           var nuevoVagon = vagones2[0].clone();
@@ -505,18 +542,25 @@
           scene.add(vagones2[vagones2.length - 1]);
 
           console.log("Si hay colision moneda vagon izqu");
+
+          $(".JugadoreLeft input").remove()
+          puntajejugador1 += 5;
+          $(".JugadoreLeft .puntaje1").append("<input class='puntaje' id='puntajejugador1' value="+puntajejugador1+" style='width: 50%; background-color: rgba(239, 184, 16, 0.7); border-radius: 10px'></input>");
+          console.log(puntajejugador1);
         }
 
         //checa colision de jugador1 a los vagones de jugador2
         for (let i = 0; i < vagones2.length; i++) {
           if (jugador1[0].position.distanceTo(vagones2[i].position) < 3) {
             explode(jugador1[0].position.x, jugador1[0].position.z);
+            hayColision = true;
           }
         }
         //checa colision de jugador2 a los vagones de jugador1
         for (let i = 0; i < vagones1.length; i++) {
           if (jugador2[0].position.distanceTo(vagones1[i].position) < 3) {
             explode(jugador2[0].position.x, jugador2[0].position.z);
+            hayColision = true;
           }
         }
 
@@ -525,6 +569,7 @@
           if (jugador1[0].position.distanceTo(vagones1[i].position) < 3) {
             if (!vagones1.length < 5) {
               explode(jugador1[0].position.x, jugador1[0].position.z);
+              hayColision = true;
             }
           }
         }
@@ -534,6 +579,7 @@
           if (jugador2[0].position.distanceTo(vagones2[i].position) < 3) {
             if (!vagones2.length < 5) {
               explode(jugador2[0].position.x, jugador2[0].position.z);
+              hayColision = true;
             }
           }
         }
@@ -545,6 +591,7 @@
           jugador1[0].position.z < -50
         ) {
           explode(jugador1[0].position.x, jugador1[0].position.z);
+          hayColision = true;
 
           if (jugador1[0].position.x > 50) {
             jugador1[0].position.x = -49;
@@ -564,6 +611,7 @@
           jugador2[0].position.z < -50
         ) {
           explode(jugador2[0].position.x, jugador2[0].position.z);
+          hayColision = true;
 
           if (jugador2[0].position.x > 50) {
             jugador2[0].position.x = -49;
@@ -699,39 +747,74 @@
         );
         model.scale.set(0.3 * esc, 0.3 * esc, 0.3 * esc);
       }
+
+      function cambiaPausa(){
+        esPausa = true;
+      }
+
+      function cambiaPausa1(){
+        esPausa = false;
+      }
     </script>
   </head>
 
   <body>
+
+
+
     <div id="scene-section">
+
       <div class="boton-pausa">
         <button
           type="hidden"
           class="pause"
           data-bs-toggle="modal"
           data-bs-target="#modalPausa"
+          onclick="cambiaPausa()";
         >
           <span class="material-icons md-xx md-light" :hover> pause </span>
         </button>
       </div>
       <!-- IMAGENES DE LOS JUGADPRES-->
       <div class="JugadoreLeft">
-        <img
+        <!--<img
           class="image-fit profileLeft"
-          src="https://cdn0.iconfinder.com/data/icons/set-ui-app-android/32/8-512.png"
+          src=   
           alt="no se cargo :("
         />
-        <label class="JugadoreLeftName">Diego</label>
+        <label class="JugadoreLeftName">Diego</label>-->
       </div>
       <div class="JugadorRight">
-        <img
+        <!--<img
           class="image-fit profileRight"
           src="https://cdn0.iconfinder.com/data/icons/set-ui-app-android/32/8-512.png"
           alt="no se cargo :("
         />
-        <label class="JugadorRightName">Gonzalo</label>
+        <label class="JugadorRightName">Gonzalo</label>-->
+      </div>
+
+      <div class="juegoTerminado">
+      <div>
+        <h1>GAME OVER</h1>
+      </div>
+      <div>
+        <h4>Gano el jugador 1</h4>
+      </div>
+      <div>
+        <a href="game.php">
+          <button>
+            Play again
+          </button>
+        </a>
+        <a href="principal.php">
+          <button>
+            Quit
+          </button>
+        </a>
       </div>
     </div>
+    </div>
+
     <div
       class="modal fade"
       id="modalPausa"
@@ -783,10 +866,11 @@
               type="button"
               class="btn btn-primary"
               data-bs-dismiss="modal"
+              onclick="cambiaPausa1()"
             >
               Resume
             </button>
-            <a href="principal.html">
+            <a href="principal.php">
               <button id="btnQuit" type="button" class="btn btn-primary">
                 Quit
               </button>
@@ -797,11 +881,38 @@
       </div>
     </div>
 
-    <script
+    <div class="modal fade" id="modalPausa2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1>GAME OVER</h1>
+          </div>
+          
+          <br />
+          <div class="elFooter">
+            <a href="game.php">
+              <button id="btnResume" type="button" class="btn btn-primary" data-bs-dismiss="modal">
+                Play again
+              </button>
+            </a>
+            
+              
+            <a href="principal.php">
+              <button id="btnQuit" type="button" class="btn btn-primary">
+                Quit
+              </button>
+            </a>
+            <br /><br />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!--<script
       src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
       integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
       crossorigin="anonymous"
-    ></script>
+    ></script>-->
     <script
       src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
       integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"

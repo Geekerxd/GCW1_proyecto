@@ -130,3 +130,12 @@ a.link:hover {
   width: 100%;
   padding: 20px;
 }
+
+.labelJugador{
+  width: 100%;
+  font-size: larger;
+  font-family: 'Times New Roman', Times, serif;
+  text-align: center;
+  margin-top: 10px;
+  border-top: solid blue 2px;
+}
