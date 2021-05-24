@@ -10,10 +10,4 @@
     transform: translate(-50%, -50%)
 }
 
-.juegoTerminado{
-    width: 500px;
-    height: 500px;
-    z-index: 2;
-    visibility: hidden;
-}
 

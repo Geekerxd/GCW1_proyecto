@@ -1052,9 +1052,9 @@
           </button>
         </a>
       </div>
+    </div>-->
     </div>
-    </div>
-    -->
+    
 
     <div
       class="modal fade"
@@ -1122,32 +1122,7 @@
       </div>
     </div>
 
-    <div class="modal fade" id="modalPausa2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="false">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h1>GAME OVER</h1>
-          </div>
-          
-          <br />
-          <div class="elFooter">
-            <a href="game.php">
-              <button id="btnResume" type="button" class="btn btn-primary" data-bs-dismiss="modal">
-                Play again
-              </button>
-            </a>
-            
-              
-            <a href="principal.php">
-              <button id="btnQuit" type="button" class="btn btn-primary">
-                Quit
-              </button>
-            </a>
-            <br /><br />
-          </div>
-        </div>
-      </div>
-    </div>
+    
 
     <!--<script
       src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
