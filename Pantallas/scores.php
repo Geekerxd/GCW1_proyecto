@@ -33,6 +33,9 @@
  
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
       rel="stylesheet">
+
+      <script type="text/javascript" src="js/jquery/jquery-2.1.4.min.js"></script>
+    <script type="text/javascript" src="scores.js"></script>
 </head>
 
 <body>
@@ -50,6 +53,9 @@
 
                 <div class="row header">
                     <div class="cell">
+                        Photo
+                    </div>
+                    <div class="cell">
                         Username
                     </div>
                     <div class="cell">
@@ -64,89 +70,7 @@
 
                 </div>
 
-                <div class="row">
-                    <div class="cell" data-title="Full Name">
-                        Vincent Williamson
-                    </div>
-                    <div class="cell" data-title="Age">
-                        <span class="material-icons md-xx md-Gold">
-                            emoji_events
-                            </span>
-                    </div>
-                    <div class="cell" data-title="Job Title">
-                        200
-                    </div>
-                    <div class="cell" data-title="Location">
-                        Feb 13, 2021
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="cell" data-title="Full Name">
-                        Joseph Smith
-                    </div>
-                    <div class="cell" data-title="Age">
-                        <span class="material-icons md-xx md-Plate">
-                            emoji_events
-                            </span>
-                    </div>
-                    <div class="cell" data-title="Job Title">
-                        150
-                    </div>
-                    <div class="cell" data-title="Location">
-                        En 13, 2021
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="cell" data-title="Full Name">
-                        Justin Black
-                    </div>
-                    <div class="cell" data-title="Age">
-                        <span class="material-icons md-xx md-Bronze">
-                            emoji_events
-                            </span>
-                    </div>
-                    <div class="cell" data-title="Job Title">
-                        100
-                    </div>
-                    <div class="cell" data-title="Location">
-                        Mar 13, 2021
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="cell" data-title="Full Name">
-                        Sean Guzman
-                    </div>
-                    <div class="cell" data-title="Age">
-                        #4
-                    </div>
-                    <div class="cell" data-title="Job Title">
-                        75
-                    </div>
-                    <div class="cell" data-title="Location">
-                        Abr 13, 2020
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="cell" data-title="Full Name">
-                        Keith Carter
-                    </div>
-                    <div class="cell" data-title="Age">
-                        #5
-                    </div>
-                    <div class="cell" data-title="Job Title">
-                        70
-                    </div>
-                    <div class="cell" data-title="Location">
-                        Mar 20, 2021
-                    </div>
-                </div>
-                
-
-
+              
 
             </div>
 
@@ -165,7 +89,7 @@
 
         <br>
 
-        <a id="back" href="principal.html"><span class="material-icons">arrow_back</span></a>
+        <a id="back" href="principal.php"><span class="material-icons">arrow_back</span></a>
 
 
     </div>
