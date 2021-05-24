@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS usuario(
     contrasena VARCHAR(16) NOT NULL,
     foto BLOB NOT NULL,
     puntaje FLOAT DEFAULT 0.0,
+    puntos FLOAT,
     fecha TIMESTAMP
 );
 
@@ -106,5 +107,5 @@ CALL sp_loginUsuario("karina@gmail.com", "123456K_");
 CALL sp_traeScores();
 
 ALTER TABLE usuario
-ADD fecha TIMESTAMP;
+ADD puntos FLOAT;
 
