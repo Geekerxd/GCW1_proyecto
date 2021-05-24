@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <script type="text/javascript" src="js/jquery/jquery-2.1.4.min.js"></script>
+  <script type="text/javascript" src="js/mifacebook.js"></script>
   <script type="text/javascript" src="models/usuario.js"></script>
   <script type="text/javascript" src="js/three/three.js"></script>
   <script type="text/javascript" src="js/singUp.js"></script>
@@ -30,11 +31,11 @@
     var currentKey;
     var currentName;
     var place;
-  
-      
-     
+
+
+
     $(document).ready(function() {
-      
+
       var sesion;
 
       const dbRefPlayers = firebase.database().ref().child('jugadores');
@@ -196,7 +197,13 @@
               </div>-->
             </div>
             <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+            <fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
+                </fb:login-button>
+
               <form action="upload.php" method="POST" enctype="multipart/form-data">
+
+                
+
                 <div class="form-group">
                   <label for="nombre">User</label>
                   <input type="text" class="form-control" id="nombre" placeholder="Name" required>
@@ -235,9 +242,9 @@
     function myFunction() {
 
       const music = document.querySelector('#music');
-      
+
       music.play()
-     
+
       var x = document.getElementById("myAudio");
       var y = document.getElementById("audioicon");
       if (music.muted == true) {

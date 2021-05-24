@@ -1,5 +1,8 @@
 $(document).ready(function(){
 
+
+   
+
     var file;
 
     $("#image").change(function(e){
