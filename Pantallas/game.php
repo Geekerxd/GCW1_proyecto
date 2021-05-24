@@ -55,7 +55,7 @@
       type="text/javascript"
       src="js/escenarios/nivel3/nivel3Anim.js"
     ></script>
-    <script type="text/javascript" src="game.js"></script>
+    
 
     <script type="text/javascript">
       var movementSpeed = 5;
@@ -120,7 +120,8 @@
       var pause;
       var esPausa = false;
 
-      var hayColision = false;
+      var hayColision1 = false;
+      var hayColision2 = false;
 
       var raycaster;
       var objetosConColision = [];
@@ -132,6 +133,75 @@
 
       var puntajejugador1 = 0.0;
       var puntajejugador2 = 0.0;
+      var yasebajo1 = false;
+      var yasebajo2 = false;
+
+      var contColision = 0;
+      var yahuboparticulas = false;
+
+
+      function sendDatosGanador1(puntos1, puntos2){
+        // Objeto en formato JSON el cual le enviaremos al webservice (PHP)
+        var dataToSend = {
+            action: "actualizarUsuarios1",
+            puntos1: puntos1,
+            puntos2: puntos2
+        };
+
+        //var objetoEnJSON = JSON.stringify(sendProduct);
+
+        //var objetoDesdeJSON = JSON.parse(objetoEnJSON);
+
+        $.ajax({
+            //url: "https://miwebservices.000webhostapp.com/webservice/webservice.php",
+            url: "user.php",
+            async: true,
+            type: "POST",
+            data: dataToSend,
+            success: function(data) {
+                //obtenemos el mensaje enviado desde el servidor SIN formato JSON
+                //alert("Se subieron los resultados!");
+
+                
+            },
+            error: function(x, y, z) {
+                alert("Error en webservice: " + x + y + z);
+            },
+        });
+      }
+
+      function sendDatosGanador2(puntos1, puntos2){
+        // Objeto en formato JSON el cual le enviaremos al webservice (PHP)
+        var dataToSend = {
+            action: "actualizarUsuarios2",
+            puntos1: puntos1,
+            puntos2: puntos2
+        };
+
+        //var objetoEnJSON = JSON.stringify(sendProduct);
+
+        //var objetoDesdeJSON = JSON.parse(objetoEnJSON);
+
+        $.ajax({
+            //url: "https://miwebservices.000webhostapp.com/webservice/webservice.php",
+            url: "user.php",
+            async: true,
+            type: "POST",
+            data: dataToSend,
+            success: function(data) {
+                //obtenemos el mensaje enviado desde el servidor SIN formato JSON
+                //alert("Se subieron los resultados!");
+
+                
+            },
+            error: function(x, y, z) {
+                alert("Error en webservice: " + x + y + z);
+            },
+        });
+      }
+
+
+
 
       function explode(x, y) {
         parts.push(new ExplodeAnimation(x, y));
@@ -193,6 +263,90 @@
       $(document).ready(function () {
         setupScene();
         // rayos para las colisiones
+
+
+        cargaUsuario1();
+       cargaUsuario2();
+
+      function cargaUsuario1(){
+        // Objeto en formato JSON el cual le enviaremos al webservice (PHP)
+        var dataToSend = {
+            action: "getDatosUser1",
+        };
+
+        //var objetoEnJSON = JSON.stringify(sendProduct);
+
+        //var objetoDesdeJSON = JSON.parse(objetoEnJSON);
+
+        $.ajax({
+            //url: "https://miwebservices.000webhostapp.com/webservice/webservice.php",
+            url: "user.php",
+            async: true,
+            type: "POST",
+            data: dataToSend,
+            dataType: 'json',
+            success: function(data) {
+                //obtenemos el mensaje enviado desde el servidor SIN formato JSON
+                //alert("Se cargaron los datos de sesion 1");
+
+                console.log(Object.values(data));
+                var objectLength = Object.keys(data).length;
+
+                for (let index = 0; index < objectLength; index++) {
+
+                    //$(".noticias-row").append("<div class='card' id=" + Object.values(data[index].idCurso).join("") + "col-12 col-sm-6 col-md-3 d-none d-sm-block'><span class='badge badge-info etiqueta'>" + Object.values(data[index].nombreCat).join("") + "</span><a href='curso.php' target='_blank'><img src=" + Object.values(data[index].fotoCurso).join("") + " class='card-img-top' alt='no se pudo cargar esta imagen' /></a><div class='Tarjeta-texto'><p style='margin-top: 15px'><strong>" + Object.values(data[index].nombreCurso).join("") + "</strong></p><p class='lead' style='font-size: 15px'>" + Object.values(data[index].descCortaCurso).join("") + "<a class='linkColor' href='curso.php'>Más información</a></p></div><div class='row empty'></div><div class='container_iconos row'><span class='material-icons md-xx'>thumb_up</span><i class='fas' :hover>" + Object.values(data[index].valoracion).join("") + "%</i><i class='fas fa-comment' :hover>138</i></div><input type='hidden' name='idCurso' value=" + Object.values(data[index].idCurso).join("") + "></div>");
+                    $(".JugadoreLeft").append("<div class='puntaje1'><input class='puntaje' id='puntajejugador1' value=0 style='width: 50%; background-color: rgba(239, 184, 16, 0.7); border-radius: 10px' disabled></input></div><br><img class='image-fit profileRight' style='border: solid blue 1px' src='uploads/"+ Object.values(data[index].foto).join("") +"' alt='no se cargo :('/><label class='JugadorRightName' style='background-color: rgba(0,0,0,0.5); color: white; border-radius:10px'>"+ Object.values(data[index].nombre).join("") +"</label>");
+                    
+                }
+
+                
+            },
+            error: function(x, y, z) {
+                alert("Error en webservice: " + x + y + z);
+            },
+        });
+    }
+
+    function cargaUsuario2(){
+        // Objeto en formato JSON el cual le enviaremos al webservice (PHP)
+        var dataToSend = {
+            action: "getDatosUser2",
+        };
+
+        //var objetoEnJSON = JSON.stringify(sendProduct);
+
+        //var objetoDesdeJSON = JSON.parse(objetoEnJSON);
+
+        $.ajax({
+            //url: "https://miwebservices.000webhostapp.com/webservice/webservice.php",
+            url: "user.php",
+            async: true,
+            type: "POST",
+            data: dataToSend,
+            dataType: 'json',
+            success: function(data) {
+                //obtenemos el mensaje enviado desde el servidor SIN formato JSON
+                //alert("Se cargaron los datos de sesion 2");
+
+                console.log(Object.values(data));
+                var objectLength = Object.keys(data).length;
+
+                for (let index = 0; index < objectLength; index++) {
+
+                    //$(".noticias-row").append("<div class='card' id=" + Object.values(data[index].idCurso).join("") + "col-12 col-sm-6 col-md-3 d-none d-sm-block'><span class='badge badge-info etiqueta'>" + Object.values(data[index].nombreCat).join("") + "</span><a href='curso.php' target='_blank'><img src=" + Object.values(data[index].fotoCurso).join("") + " class='card-img-top' alt='no se pudo cargar esta imagen' /></a><div class='Tarjeta-texto'><p style='margin-top: 15px'><strong>" + Object.values(data[index].nombreCurso).join("") + "</strong></p><p class='lead' style='font-size: 15px'>" + Object.values(data[index].descCortaCurso).join("") + "<a class='linkColor' href='curso.php'>Más información</a></p></div><div class='row empty'></div><div class='container_iconos row'><span class='material-icons md-xx'>thumb_up</span><i class='fas' :hover>" + Object.values(data[index].valoracion).join("") + "%</i><i class='fas fa-comment' :hover>138</i></div><input type='hidden' name='idCurso' value=" + Object.values(data[index].idCurso).join("") + "></div>");
+                    $(".JugadorRight").append("<div class='puntaje2'><input class='puntaje' id='puntajejugador2' value=0 style='width: 50%; background-color: rgba(239, 184, 16, 0.7); border-radius: 10px' disabled></input></div><br><img class='image-fit profileRight' style='border: solid blue 1px' src='uploads/"+ Object.values(data[index].foto).join("") +"' alt='no se cargo :('/><label class='JugadorRightName' style='background-color: rgba(0,0,0,0.5); color: white; border-radius:10px'>"+ Object.values(data[index].nombre).join("") +"</label>");
+                    
+                }
+
+                
+            },
+            error: function(x, y, z) {
+                alert("Error en webservice: " + x + y + z);
+            },
+        });
+    }
+
+
 
         // la moneda
         var monedaPosi = spawnAppleVector();
@@ -321,9 +475,69 @@
 
       function render() {
 
-        if(hayColision == true){
+        if(hayColision1 == true){
 
-          $("#modal2").show();
+          var selectedObject = scene.getObjectByName(jugador1);
+          scene.remove(selectedObject);
+
+          if(yasebajo1 == false){
+            puntajejugador1 = puntajejugador1 - 50;
+            yasebajo1 = true;
+          }
+
+          var puntajeFinal1 = puntajejugador1;
+          var puntajeFinal2 = puntajejugador2;
+
+          if(puntajeFinal1 > puntajeFinal2){
+            sendDatosGanador1(puntajeFinal1, puntajeFinal2);
+            
+            
+          }
+          else if(puntajeFinal1 < puntajeFinal2){
+            sendDatosGanador2(puntajeFinal1, puntajeFinal2);
+          
+          }
+          else{
+            
+          }
+
+          contColision += 0.1;
+
+          if(contColision >= 5){
+            location.href ="ganador.php";
+          }
+
+
+        }
+
+        if(hayColision2 == true){
+
+          
+
+          if(yasebajo2 == false){
+            puntajejugador2 = puntajejugador2 - 50;
+            yasebajo2 = true;
+          }
+
+          var puntajeFinal1 = puntajejugador1;
+          var puntajeFinal2 = puntajejugador2;
+
+          if(puntajeFinal1 > puntajeFinal2){
+            sendDatosGanador1(puntajeFinal1, puntajeFinal2);
+          }
+          else if(puntajeFinal1 < puntajeFinal2){
+            sendDatosGanador2(puntajeFinal1, puntajeFinal2);
+          
+          }
+          else{
+
+          }
+
+          contColision += 0.1;
+
+          if(contColision >= 5){
+            location.href ="ganador.php";
+          }
 
 
         }
@@ -379,7 +593,7 @@
         //tren inicial izquierda
         direction2 = keysQueue2.length > 0 ? keysQueue2.pop(0) : direction2;
 
-        if(esPausa == false){
+        if(esPausa == false && hayColision1 == false && hayColision2 == false){
         jugador2[0].translateX(direction2.x * deltaTime * velocidad);
         jugador2[0].translateZ(direction2.z * deltaTime * velocidad);
 
@@ -404,7 +618,7 @@
 
         //console.log("X: " + jugador1[0].position.x + " y: " + jugador1[0].position.z);
         
-        if(esPausa == false){
+        if(esPausa == false && hayColision1 == false && hayColision2 == false){
         for (let i = 1; i < vagones1.length; i++) {
           var ultiPosi = lastPosition1[lastPosition1.length - 15 - i * 7];
 
@@ -507,8 +721,8 @@
 
           $(".JugadorRight input").remove()
           puntajejugador2 += 5;
-          $(".JugadorRight .puntaje2").append("<input class='puntaje' id='puntajejugador2' value="+puntajejugador2+" style='width: 50%; background-color: rgba(239, 184, 16, 0.7); border-radius: 10px'></input>");
-          console.log(puntajejugador1);
+          $(".JugadorRight .puntaje2").append("<input class='puntaje' id='puntajejugador2' value="+puntajejugador2+" style='width: 50%; background-color: rgba(239, 184, 16, 0.7); border-radius: 10px' disabled></input>");
+          console.log(puntajejugador2);
         } 
         else if (jugador2[0].position.distanceTo(laMoneda[0].position) < 3) {
           // nueva posición de la moneda
@@ -545,22 +759,28 @@
 
           $(".JugadoreLeft input").remove()
           puntajejugador1 += 5;
-          $(".JugadoreLeft .puntaje1").append("<input class='puntaje' id='puntajejugador1' value="+puntajejugador1+" style='width: 50%; background-color: rgba(239, 184, 16, 0.7); border-radius: 10px'></input>");
+          $(".JugadoreLeft .puntaje1").append("<input class='puntaje' id='puntajejugador1' value="+puntajejugador1+" style='width: 50%; background-color: rgba(239, 184, 16, 0.7); border-radius: 10px' disabled></input>");
           console.log(puntajejugador1);
         }
 
         //checa colision de jugador1 a los vagones de jugador2
         for (let i = 0; i < vagones2.length; i++) {
           if (jugador1[0].position.distanceTo(vagones2[i].position) < 3) {
-            explode(jugador1[0].position.x, jugador1[0].position.z);
-            hayColision = true;
+            if(yahuboparticulas == false){
+              explode(jugador1[0].position.x, jugador1[0].position.z);
+              yahuboparticulas = true;
+            }
+            hayColision2 = true;
           }
         }
         //checa colision de jugador2 a los vagones de jugador1
         for (let i = 0; i < vagones1.length; i++) {
           if (jugador2[0].position.distanceTo(vagones1[i].position) < 3) {
-            explode(jugador2[0].position.x, jugador2[0].position.z);
-            hayColision = true;
+            if(yahuboparticulas == false){
+              explode(jugador2[0].position.x, jugador2[0].position.z);
+              yahuboparticulas = true;
+            }
+            hayColision1 = true;
           }
         }
 
@@ -568,8 +788,11 @@
         for (let i = 0; i < vagones1.length; i++) {
           if (jugador1[0].position.distanceTo(vagones1[i].position) < 3) {
             if (!vagones1.length < 5) {
-              explode(jugador1[0].position.x, jugador1[0].position.z);
-              hayColision = true;
+              if(yahuboparticulas == false){
+                explode(jugador1[0].position.x, jugador1[0].position.z);
+                yahuboparticulas = true;
+              }
+              hayColision2 = true;
             }
           }
         }
@@ -578,8 +801,11 @@
         for (let i = 0; i < vagones2.length; i++) {
           if (jugador2[0].position.distanceTo(vagones2[i].position) < 3) {
             if (!vagones2.length < 5) {
+              if(yahuboparticulas == false){
               explode(jugador2[0].position.x, jugador2[0].position.z);
-              hayColision = true;
+              yahuboparticulas = true;
+              }
+              hayColision1 = true;
             }
           }
         }
@@ -590,10 +816,13 @@
           jugador1[0].position.z > 50 ||
           jugador1[0].position.z < -50
         ) {
-          explode(jugador1[0].position.x, jugador1[0].position.z);
-          hayColision = true;
+          if(yahuboparticulas == false){
+            explode(jugador1[0].position.x, jugador1[0].position.z);
+            yahuboparticulas = true;
+          }
+          hayColision2 = true;
 
-          if (jugador1[0].position.x > 50) {
+          /*if (jugador1[0].position.x > 50) {
             jugador1[0].position.x = -49;
           } else if (jugador1[0].position.x < -50) {
             jugador1[0].position.x = 49;
@@ -601,7 +830,7 @@
             jugador1[0].position.z = -49;
           } else if (jugador1[0].position.z < -50) {
             jugador1[0].position.z = 49;
-          }
+          }*/
         }
 
         if (
@@ -610,18 +839,21 @@
           jugador2[0].position.z > 50 ||
           jugador2[0].position.z < -50
         ) {
-          explode(jugador2[0].position.x, jugador2[0].position.z);
-          hayColision = true;
+          if(yahuboparticulas == false){
+            explode(jugador2[0].position.x, jugador2[0].position.z);
+            yahuboparticulas = true;
+          }
+          hayColision1 = true;
 
-          if (jugador2[0].position.x > 50) {
+          /*if (jugador2[0].position.x > 50) {
             jugador2[0].position.x = -49;
           } else if (jugador2[0].position.x < -50) {
             jugador2[0].position.x = 49;
           } else if (jugador2[0].position.z > 50) {
             jugador2[0].position.z = -49;
-          } else if (jugador2[0].position.z < -50) {
+          } else if (jugador2[0].position.z <script -50) {
             jugador2[0].position.z = 49;
-          }
+          }*/
         }
 
         ///particles
@@ -691,6 +923,7 @@
             transform(jugador, -30, 0, 0, 0, 0, 0, 1);
             scene.add(jugador);
             jugador2.push(jugador);
+            jugador2.name = "jugador2";
           }
         );
         loadOBJWithMTL(
@@ -702,6 +935,7 @@
             transform(jugador, 30, 0, 0, 0, 0, 0, 1);
             scene.add(jugador);
             jugador1.push(jugador);
+            jugador1.name = "jugador1";
           }
         );
 
@@ -755,6 +989,12 @@
       function cambiaPausa1(){
         esPausa = false;
       }
+
+
+
+      
+
+      
     </script>
   </head>
 
@@ -793,7 +1033,7 @@
         <label class="JugadorRightName">Gonzalo</label>-->
       </div>
 
-      <div class="juegoTerminado">
+     <!-- <div class="juegoTerminado" id="juegoTerminado">
       <div>
         <h1>GAME OVER</h1>
       </div>
@@ -812,8 +1052,9 @@
           </button>
         </a>
       </div>
+    </div>-->
     </div>
-    </div>
+    
 
     <div
       class="modal fade"
@@ -881,32 +1122,7 @@
       </div>
     </div>
 
-    <div class="modal fade" id="modalPausa2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h1>GAME OVER</h1>
-          </div>
-          
-          <br />
-          <div class="elFooter">
-            <a href="game.php">
-              <button id="btnResume" type="button" class="btn btn-primary" data-bs-dismiss="modal">
-                Play again
-              </button>
-            </a>
-            
-              
-            <a href="principal.php">
-              <button id="btnQuit" type="button" class="btn btn-primary">
-                Quit
-              </button>
-            </a>
-            <br /><br />
-          </div>
-        </div>
-      </div>
-    </div>
+    
 
     <!--<script
       src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
@@ -923,5 +1139,9 @@
       integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
       crossorigin="anonymous"
     ></script>
+
+
+      
+
   </body>
 </html>

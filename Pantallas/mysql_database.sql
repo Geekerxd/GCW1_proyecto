@@ -14,7 +14,9 @@ CREATE TABLE IF NOT EXISTS usuario(
 
 select * from usuario;
 
+
 CREATE PROCEDURE `sp_signupUsuario`(
+
 IN inNombre VARCHAR(50),
 IN inContra VARCHAR(16),
 IN inEmail VARCHAR(100),
@@ -25,7 +27,9 @@ BEGIN
     VALUES(inNombre, inEmail, inContra, inFoto);
 END
 
+
 CREATE  PROCEDURE `sp_loginUsuario`(
+
 IN inEmail VARCHAR(100),
 IN inContra VARCHAR(16)
 )
@@ -35,7 +39,9 @@ BEGIN
     WHERE usuario.email = inEmail AND usuario.contrasena = inContra;
 END
 
+
 CREATE PROCEDURE `sp_actualizaUsuarios`(
+
 IN inEmail1 VARCHAR(100),
 IN inContra1 VARCHAR(16),
 IN inPuntaje1 FLOAT,
@@ -81,7 +87,9 @@ BEGIN
     WHERE usuario.email = inEmail1;
 END
 
+
 CREATE FUNCTION `fn_comparaPuntaje`(
+
 puntaje1 FLOAT,
 idU INT
 ) RETURNS int

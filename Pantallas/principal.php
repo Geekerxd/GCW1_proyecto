@@ -107,7 +107,7 @@
       <p class="p"><a class="link" href="info.html"> Info</a></p>
     </div>
     <div class="div" id="scores">
-      <p class="p"><a class="link" href="scores.html">Scores</a></p>
+      <p class="p"><a class="link" href="scores.php">Scores</a></p>
     </div>
     <div class="div" id="config">
       <p class="p"><a class="link" href="config.html"><span class="material-icons">settings</span></a></p>
