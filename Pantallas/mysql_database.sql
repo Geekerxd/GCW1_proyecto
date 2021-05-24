@@ -28,20 +28,18 @@ BEGIN
 END
 
 
-CREATE  PROCEDURE `sp_loginUsuario`(
-
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_loginUsuario`(
 IN inEmail VARCHAR(100),
 IN inContra VARCHAR(16)
 )
 BEGIN
-	SELECT usuario.email, usuario.contrasena, usuario.foto, usuario.nombre, usuario.puntaje
+	SELECT usuario.email, usuario.contrasena, usuario.foto, usuario.nombre, usuario.puntaje, usuario.puntos
     FROM usuario
     WHERE usuario.email = inEmail AND usuario.contrasena = inContra;
 END
 
 
-CREATE PROCEDURE `sp_actualizaUsuarios`(
-
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_actualizaUsuarios`(
 IN inEmail1 VARCHAR(100),
 IN inContra1 VARCHAR(16),
 IN inPuntaje1 FLOAT,
@@ -74,7 +72,8 @@ BEGIN
 
 	UPDATE usuario
     SET usuario.puntaje = fn_comparaPuntaje(inPuntaje1, idUser1),
-		usuario.fecha = IF(fn_comparaPuntaje(inPuntaje1, idUser1) = puntosUser1, usuario.fecha,NOW())
+		usuario.fecha = IF(fn_comparaPuntaje(inPuntaje1, idUser1) = puntosUser1, usuario.fecha,NOW()),
+        usuario.puntos = inPuntaje1
     WHERE usuario.id = idUser1;
     
     UPDATE usuario

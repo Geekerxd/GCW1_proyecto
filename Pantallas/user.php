@@ -42,11 +42,15 @@
             $mysqli = $db->connect();
 
             $result = $mysqli->query("CALL sp_loginUsuario('".$this->email."','".$this->contrasena."');");
+           
+            
 
-            if(!$result){
+            if(!$result ){
                 echo "Problema al hacer el query: " . $mysqli->error;
             }
             else{
+               
+
                 // Recorremos los resultados devueltos
 
                 session_start();
@@ -60,7 +64,8 @@
 			    $rows = array();
 			    while( $r = $result->fetch_assoc()) {
 				    $rows[] = $r;
-			    }			
+			    }	
+          
 			// Codificamos los resultados a formato JSON y lo enviamos al HTML (Client-Side)
 			echo json_encode($rows);
             }
