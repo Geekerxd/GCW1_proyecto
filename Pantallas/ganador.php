@@ -65,7 +65,7 @@
                 Play again
               </button>
             </a>
-            <a href="principal.php">
+            <a href="index.php">
               <button id="btnQuit" type="button" class="btn btn-primary">
                 Quit
               </button>

@@ -54,7 +54,7 @@ $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
 if(($_FILES["image"]["type"] == "image/png") || ($_FILES["image"]["type"] == "image/jpeg") || ($_FILES["image"]["type"] == "image/jpg")){
   if (move_uploaded_file($_FILES["image"]["tmp_name"], $target_file)) {
     echo "Se subió imagen";
-    header("location: principal.php");
+    header("location: index.php");
   } else{
     echo "Lo sentimos, ha ocurrido un error al subir la imagen.";
   }
